@@ -1,0 +1,51 @@
+name: VPN File Download and Public Hosting
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  vpn-download-host:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install OpenVPN
+      run: sudo apt-get update && sudo apt-get install -y openvpn
+
+    - name: Set up OpenVPN connection
+      env:
+        OVPN_USER: ${{ secrets.OVPN_USER }}
+        OVPN_PASS: ${{ secrets.OVPN_PASS }}
+      run: |
+        echo -e "${OVPN_USER}\n${OVPN_PASS}" > auth.txt
+        sudo openvpn --config LK.ovpn --auth-user-pass auth.txt --daemon
+        sleep 10 # Wait for the VPN connection to establish
+
+    - name: Test VPN connectivity
+      run: |
+        echo "Testing VPN Connectivity..."
+        ping -c 4 8.8.8.8
+
+    - name: Download the XML file
+      run: |
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+
+    - name: Extract and prepare the XML
+      run: |
+        gzip -d epg.xml.gz
+        mv epg.xml public/epg.xml
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add public/epg.xml
+        git commit -m "Add updated epg.xml"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
