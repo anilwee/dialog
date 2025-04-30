@@ -1,0 +1,16 @@
+# Ignore OpenVPN config file
+LK.ovpn
+
+# Ignore authentication files
+auth.txt
+*.auth
+
+# Ignore secrets and environment configuration
+*.env
+secrets/
+*.key
+*.pem
+
+# Ignore system files
+.DS_Store
+Thumbs.db
