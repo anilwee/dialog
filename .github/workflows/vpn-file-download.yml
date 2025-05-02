@@ -16,11 +16,11 @@ jobs:
     - name: Install OpenVPN
       run: sudo apt-get update && sudo apt-get install -y openvpn
 
-    - name: Decode and save OpenVPN file
+    - name: Decode and save OpenVPN configuration
       env:
-        OVPN_FILE: ${{ secrets.OVPN_FILE }}
+        OVPN_CONFIG: ${{ secrets.OVPN_CONFIG }}
       run: |
-        echo "${OVPN_FILE}" | base64 -d > LK.ovpn
+        echo "${OVPN_CONFIG}" | base64 -d > vpn-config.ovpn
 
     - name: Set up OpenVPN connection
       env:
@@ -28,7 +28,7 @@ jobs:
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
         echo -e "${OVPN_USER}\n${OVPN_PASS}" > auth.txt
-        sudo openvpn --config LK.ovpn --auth-user-pass auth.txt --daemon
+        sudo openvpn --config vpn-config.ovpn --auth-user-pass auth.txt --daemon
         sleep 10 # Wait for the VPN connection to establish
 
     - name: Test VPN connectivity
