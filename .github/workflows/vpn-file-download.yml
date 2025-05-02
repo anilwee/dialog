@@ -1,8 +1,6 @@
 name: VPN File Download and Public Hosting
 
 on:
-  schedule:
-    - cron: '0 12 * * *' # Runs daily at 12:00 UTC (00:00 AKL, NZST)
   workflow_dispatch:
 
 jobs:
@@ -10,51 +8,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - name: Install OpenVPN
+      run: sudo apt-get update && sudo apt-get install -y openvpn
 
-    - name: Install OpenVPN and required tools
-      run: sudo apt-get update && sudo apt-get install -y openvpn curl
-
-    - name: Decode and save sensitive keys
+    - name: Debug secrets
       env:
-        OVPN_CA: ${{ secrets.OVPN_CA }}
-        OVPN_TLS_AUTH: ${{ secrets.OVPN_TLS_AUTH }}
+        OVPN_USER: ${{ secrets.OVPN_USER }}
+        OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
-        echo "${OVPN_CA}" | base64 -d > ca.pem
-        echo "${OVPN_TLS_AUTH}" | base64 -d > ta.key
+        if [ -z "${OVPN_USER}" ]; then echo "Error: OVPN_USER is not set"; exit 1; fi
+        if [ -z "${OVPN_PASS}" ]; then echo "Error: OVPN_PASS is not set"; exit 1; fi
+        echo "OVPN_USER and OVPN_PASS are set correctly."
 
     - name: Set up OpenVPN connection
       env:
         OVPN_USER: ${{ secrets.OVPN_USER }}
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
+        mkdir -p /tmp/vpn
+        cd /tmp/vpn
         printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > auth.txt
-        sudo openvpn --config LK.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10 # Wait for the VPN connection to establish
-
-    - name: Check VPN country
-      run: |
-        echo "Checking VPN country..."
-        curl -s https://ipinfo.io | grep country || echo "Failed to retrieve country"
-
-    - name: Test VPN connectivity
-      run: |
-        echo "Testing VPN connectivity..."
-        ping -c 4 8.8.8.8 || { echo "VPN connection failed"; exit 1; }
-
-    - name: Download the XML file
-      run: |
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
-        mkdir -p public
-        mv epg.xml.gz public/epg.xml.gz
-
-    - name: Commit and push changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add public/epg.xml.gz
-        git commit -m "Add updated epg.xml.gz"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        chmod 600 auth.txt
+        sudo openvpn --config /path/to/your-vpn-config.ovpn --auth-user-pass auth.txt --daemon
+        sleep 10
