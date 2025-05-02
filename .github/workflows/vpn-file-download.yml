@@ -13,18 +13,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install OpenVPN and curl
+    - name: Install OpenVPN and required tools
       run: sudo apt-get update && sudo apt-get install -y openvpn curl
 
-    - name: Decode and save OpenVPN configuration
+    - name: Decode and save sensitive keys
       env:
-        OVPN_CONFIG: ${{ secrets.OVPN_CONFIG }}
+        OVPN_CA: ${{ secrets.OVPN_CA }}
+        OVPN_TLS_AUTH: ${{ secrets.OVPN_TLS_AUTH }}
       run: |
-        echo "${OVPN_CONFIG}" | base64 -d > vpn-config.ovpn
-
-    - name: Verify Decoded OpenVPN Configuration
-      run: |
-        cat vpn-config.ovpn
+        echo "${OVPN_CA}" | base64 -d > ca.pem
+        echo "${OVPN_TLS_AUTH}" | base64 -d > ta.key
 
     - name: Set up OpenVPN connection
       env:
@@ -32,9 +30,8 @@ jobs:
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
         printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > auth.txt
-        sudo openvpn --config vpn-config.ovpn --auth-user-pass auth.txt --daemon --log /tmp/openvpn.log
-        sleep 10
-        cat /tmp/openvpn.log
+        sudo openvpn --config LK.ovpn --auth-user-pass auth.txt --daemon
+        sleep 10 # Wait for the VPN connection to establish
 
     - name: Check VPN country
       run: |
