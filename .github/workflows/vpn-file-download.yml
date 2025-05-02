@@ -22,21 +22,19 @@ jobs:
       run: |
         echo "${OVPN_CONFIG}" | base64 -d > vpn-config.ovpn
 
+    - name: Verify Decoded OpenVPN Configuration
+      run: |
+        cat vpn-config.ovpn
+
     - name: Set up OpenVPN connection
       env:
         OVPN_USER: ${{ secrets.OVPN_USER }}
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
-        # Debug secrets (optional, does not expose secret values)
-        if [ -z "${OVPN_USER}" ]; then echo "OVPN_USER is empty"; exit 1; fi
-        if [ -z "${OVPN_PASS}" ]; then echo "OVPN_PASS is empty"; exit 1; fi
-
-        # Create auth.txt with username and password
         printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > auth.txt
-
-        # Start OpenVPN
-        sudo openvpn --config vpn-config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10 # Wait for the VPN connection to establish
+        sudo openvpn --config vpn-config.ovpn --auth-user-pass auth.txt --daemon --log /tmp/openvpn.log
+        sleep 10
+        cat /tmp/openvpn.log
 
     - name: Check VPN country
       run: |
