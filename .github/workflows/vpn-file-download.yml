@@ -11,23 +11,37 @@ jobs:
     - name: Install OpenVPN
       run: sudo apt-get update && sudo apt-get install -y openvpn
 
-    - name: Debug secrets
+    - name: Decode and save sensitive keys
       env:
-        OVPN_USER: ${{ secrets.OVPN_USER }}
-        OVPN_PASS: ${{ secrets.OVPN_PASS }}
+        OVPN_CONFIG: ${{ secrets.OVPN_CONFIG }}
       run: |
-        if [ -z "${OVPN_USER}" ]; then echo "Error: OVPN_USER is not set"; exit 1; fi
-        if [ -z "${OVPN_PASS}" ]; then echo "Error: OVPN_PASS is not set"; exit 1; fi
-        echo "OVPN_USER and OVPN_PASS are set correctly."
+        mkdir -p /tmp/vpn
+        echo "${OVPN_CONFIG}" | base64 -d > /tmp/vpn/vpn-config.ovpn
+
+    - name: Verify VPN Configuration File
+      run: |
+        if [ ! -f /tmp/vpn/vpn-config.ovpn ]; then
+          echo "Error: VPN configuration file not found at /tmp/vpn/vpn-config.ovpn"
+          exit 1
+        fi
+        echo "VPN configuration file exists."
 
     - name: Set up OpenVPN connection
       env:
         OVPN_USER: ${{ secrets.OVPN_USER }}
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
-        mkdir -p /tmp/vpn
-        cd /tmp/vpn
-        printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > auth.txt
-        chmod 600 auth.txt
-        sudo openvpn --config /path/to/your-vpn-config.ovpn --auth-user-pass auth.txt --daemon
+        printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > /tmp/vpn/auth.txt
+        chmod 600 /tmp/vpn/auth.txt
+        sudo openvpn --config /tmp/vpn/vpn-config.ovpn --auth-user-pass /tmp/vpn/auth.txt --daemon
         sleep 10
+
+    - name: Check VPN country
+      run: |
+        echo "Checking VPN country..."
+        curl -s https://ipinfo.io | grep country || echo "Failed to retrieve country"
+
+    - name: Test VPN connectivity
+      run: |
+        echo "Testing VPN connectivity..."
+        ping -c 4 8.8.8.8 || { echo "VPN connection failed"; exit 1; }
