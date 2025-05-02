@@ -13,8 +13,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install OpenVPN
-      run: sudo apt-get update && sudo apt-get install -y openvpn
+    - name: Install OpenVPN and curl
+      run: sudo apt-get update && sudo apt-get install -y openvpn curl
 
     - name: Decode and save OpenVPN configuration
       env:
@@ -27,14 +27,26 @@ jobs:
         OVPN_USER: ${{ secrets.OVPN_USER }}
         OVPN_PASS: ${{ secrets.OVPN_PASS }}
       run: |
-        echo -e "${OVPN_USER}\n${OVPN_PASS}" > auth.txt
+        # Debug secrets (optional, does not expose secret values)
+        if [ -z "${OVPN_USER}" ]; then echo "OVPN_USER is empty"; exit 1; fi
+        if [ -z "${OVPN_PASS}" ]; then echo "OVPN_PASS is empty"; exit 1; fi
+
+        # Create auth.txt with username and password
+        printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > auth.txt
+
+        # Start OpenVPN
         sudo openvpn --config vpn-config.ovpn --auth-user-pass auth.txt --daemon
         sleep 10 # Wait for the VPN connection to establish
 
+    - name: Check VPN country
+      run: |
+        echo "Checking VPN country..."
+        curl -s https://ipinfo.io | grep country || echo "Failed to retrieve country"
+
     - name: Test VPN connectivity
       run: |
-        echo "Testing VPN Connectivity..."
-        ping -c 4 8.8.8.8
+        echo "Testing VPN connectivity..."
+        ping -c 4 8.8.8.8 || { echo "VPN connection failed"; exit 1; }
 
     - name: Download the XML file
       run: |
