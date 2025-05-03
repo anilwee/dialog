@@ -1,10 +1,10 @@
-name: VPN Connect Debug Workflow
+name: VPN Connect and File Host
 
 on:
   workflow_dispatch:
 
 jobs:
-  debug-vpn:
+  vpn-download-host:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,8 +15,8 @@ jobs:
       run: |
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
         fold -w 64 raw_config.ovpn > config.ovpn
-        wc -L config.ovpn  # Check max line length to ensure it's under 256
-        cat config.ovpn    # Optional: Inspect the config file for debugging
+        wc -L config.ovpn  # Check max line length
+        cat config.ovpn    # Optional: Inspect the file (remove in production)
 
     - name: Install OpenVPN
       run: |
@@ -28,15 +28,38 @@ jobs:
       run: |
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
         chmod 600 auth.txt  # Secure the file for OpenVPN usage
-        cat auth.txt         # Optional: Verify contents for debugging (remove in production)
+        cat auth.txt         # Optional: Inspect the file (remove in production)
 
-    - name: Sleep for Initialization
-      run: sleep 5
-
-    - name: Run OpenVPN Without Daemon
+    - name: Run OpenVPN
       run: |
-        sudo openvpn --config config.ovpn --auth-user-pass auth.txt
+        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+        sleep 10  # Allow time for the VPN connection to establish
 
-    - name: Debug OpenVPN Logs
+    - name: Verify VPN Connection
       run: |
-        sudo cat /var/log/syslog | grep openvpn
+        ip a  # Check the network interfaces
+        curl --max-time 10 https://ipinfo.io  # Verify new IP address via VPN
+
+    - name: Download XML File
+      run: |
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+
+    - name: Decompress XML File
+      run: |
+        gunzip -f epg.xml.gz
+
+    - name: Commit and Push Updated File
+      run: |
+        mkdir -p public
+        mv epg.xml public/epg.xml
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add public/epg.xml
+        git commit -m "Update EPG file"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push Changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
