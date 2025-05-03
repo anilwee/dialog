@@ -1,14 +1,10 @@
-name: VPN Connect and File Host
+name: VPN Connect Debug Workflow
 
 on:
-  schedule:
-    # Runs every day at midnight UTC
-    - cron: '0 0 * * *'
   workflow_dispatch:
-    # Allows manual triggering of the workflow
 
 jobs:
-  vpn-download-host:
+  debug-vpn:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,36 +30,13 @@ jobs:
         chmod 600 auth.txt  # Secure the file for OpenVPN usage
         cat auth.txt         # Optional: Verify contents for debugging (remove in production)
 
-    - name: Connect to VPN with OpenVPN
-      run: |
-        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10  # Allow time for VPN connection to establish
+    - name: Sleep for Initialization
+      run: sleep 5
 
-    - name: Verify VPN Connection
+    - name: Run OpenVPN Without Daemon
       run: |
-        ip a  # Check the network interfaces
-        curl --max-time 10 https://ipinfo.io  # Verify new IP address via VPN
+        sudo openvpn --config config.ovpn --auth-user-pass auth.txt
 
-    - name: Download XML File
+    - name: Debug OpenVPN Logs
       run: |
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
-
-    - name: Decompress XML File
-      run: |
-        gunzip -f epg.xml.gz
-
-    - name: Commit and Push Updated File
-      run: |
-        mkdir -p public
-        mv epg.xml public/epg.xml
-        git config --global user.name "GitHub Actions Bot"
-        git config --global user.email "actions@github.com"
-        git add public/epg.xml
-        git commit -m "Update EPG file"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Push Changes
-      uses: ad-m/github-push-action@v0.6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        sudo cat /var/log/syslog | grep openvpn
