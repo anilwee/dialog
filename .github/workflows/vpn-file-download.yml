@@ -1,10 +1,14 @@
-name: VPN Debug Workflow
+name: VPN Connect and File Host
 
 on:
+  schedule:
+    # Runs every day at midnight UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
+    # Allows manual triggering of the workflow
 
 jobs:
-  debug-vpn:
+  vpn-download-host:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,8 +19,8 @@ jobs:
       run: |
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
         fold -w 64 raw_config.ovpn > config.ovpn
-        wc -L config.ovpn
-        cat config.ovpn
+        wc -L config.ovpn  # Check max line length to ensure it's under 256
+        cat config.ovpn    # Optional: Inspect the config file for debugging
 
     - name: Install OpenVPN
       run: |
@@ -24,21 +28,42 @@ jobs:
         sudo apt-get install -y openvpn
         sudo openvpn --version
 
-    - name: Set up VPN
+    - name: Create Auth File
       run: |
-        echo -e "${{ secrets.VPN_USERNAME}}\n${{ secrets.VPN_PASSWORD}}" > auth.txt
-        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10
+        printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
+        chmod 600 auth.txt  # Secure the file for OpenVPN usage
+        cat auth.txt         # Optional: Verify contents for debugging (remove in production)
 
-    - name: Check VPN Status
+    - name: Connect to VPN with OpenVPN
       run: |
-        sudo systemctl status openvpn
+        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+        sleep 10  # Allow time for VPN connection to establish
 
     - name: Verify VPN Connection
       run: |
-        ip a
-        curl --max-time 10 https://ipinfo.io
+        ip a  # Check the network interfaces
+        curl --max-time 10 https://ipinfo.io  # Verify new IP address via VPN
 
-    - name: Debug OpenVPN Logs
+    - name: Download XML File
       run: |
-        sudo cat /var/log/syslog | grep openvpn
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+
+    - name: Decompress XML File
+      run: |
+        gunzip -f epg.xml.gz
+
+    - name: Commit and Push Updated File
+      run: |
+        mkdir -p public
+        mv epg.xml public/epg.xml
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add public/epg.xml
+        git commit -m "Update EPG file"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push Changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
