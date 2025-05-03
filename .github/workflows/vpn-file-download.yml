@@ -1,47 +1,55 @@
-name: VPN File Download and Public Hosting
+name: Download and Host EPG File
 
 on:
+  schedule:
+    # Runs every day at midnight UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
+    # Allows manual triggering of the workflow
 
 jobs:
-  vpn-download-host:
+  download-and-host:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install OpenVPN
-      run: sudo apt-get update && sudo apt-get install -y openvpn
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Decode and save sensitive keys
-      env:
-        OVPN_CONFIG: ${{ secrets.OVPN_CONFIG }}
+    - name: Set up VPN
       run: |
-        mkdir -p /tmp/vpn
-        echo "${OVPN_CONFIG}" | base64 -d > /tmp/vpn/vpn-config.ovpn
-
-    - name: Verify VPN Configuration File
-      run: |
-        if [ ! -f /tmp/vpn/vpn-config.ovpn ]; then
-          echo "Error: VPN configuration file not found at /tmp/vpn/vpn-config.ovpn"
-          exit 1
-        fi
-        echo "VPN configuration file exists."
-
-    - name: Set up OpenVPN connection
-      env:
-        OVPN_USER: ${{ secrets.OVPN_USER }}
-        OVPN_PASS: ${{ secrets.OVPN_PASS }}
-      run: |
-        printf "%s\n%s" "${OVPN_USER}" "${OVPN_PASS}" > /tmp/vpn/auth.txt
-        chmod 600 /tmp/vpn/auth.txt
-        sudo openvpn --config /tmp/vpn/vpn-config.ovpn --auth-user-pass /tmp/vpn/auth.txt --daemon
+        echo "${{ secrets.OVPN_FILE }}" > config.ovpn
+        echo -e "${{ secrets.VPN_USERNAME}}\n${{ secrets.VPN_PASSWORD}}" > auth.txt
+        sudo apt-get update
+        sudo apt-get install -y openvpn
+        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
         sleep 10
+      env:
+        VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
+        VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+        OVPN_FILE: ${{ secrets.OVPN_FILE }}
 
-    - name: Check VPN country
+    - name: Test VPN Connectivity
       run: |
-        echo "Checking VPN country..."
-        curl -s https://ipinfo.io | grep country || echo "Failed to retrieve country"
+        curl --max-time 10 https://ipinfo.io
+        echo "VPN Connectivity Test Passed!"
 
-    - name: Test VPN connectivity
+    - name: Download XML file
       run: |
-        echo "Testing VPN connectivity..."
-        ping -c 4 8.8.8.8 || { echo "VPN connection failed"; exit 1; }
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+
+    - name: Decompress XML file
+      run: |
+        gunzip -f epg.xml.gz
+
+    - name: Add and Commit Updated EPG File
+      run: |
+        mv epg.xml public/epg.xml
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add public/epg.xml
+        git commit -m "Update EPG file"
+
+    - name: Push Changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
