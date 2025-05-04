@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 11 * * *" # Runs daily at 11:00 PM UTC (00:00 AM NZT during daylight savings)
   workflow_dispatch: # Allows manual triggering
+
 jobs:
   vpn-download-host:
     runs-on: ubuntu-latest
@@ -61,6 +62,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push Changes
-      uses: ad-m/github-push-action@v0.6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git pull --rebase origin master  # Fetch and rebase onto the latest remote branch
+        git push origin master          # Push the changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
