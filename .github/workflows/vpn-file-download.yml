@@ -1,8 +1,8 @@
 name: VPN Connect and File Host
 
 on:
-  workflow_dispatch:
-
+  - cron: "0 12 * * *" # Runs daily at 11:00 PM UTC (00:00 AM NZT during daylight savings)
+  workflow_dispatch: # Allows manual triggering
 jobs:
   vpn-download-host:
     runs-on: ubuntu-latest
