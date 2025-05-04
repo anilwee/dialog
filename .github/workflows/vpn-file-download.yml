@@ -57,13 +57,14 @@ jobs:
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
         git add public/epg.xml
-        git commit -m "Update EPG file"
+        git commit -m "Update EPG file" || echo "No changes to commit"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Push Changes
+    - name: Pull Latest Changes and Push
       run: |
-        git pull --rebase origin master  # Fetch and rebase onto the latest remote branch
-        git push origin master          # Push the changes
+        git fetch origin
+        git rebase origin/master || git rebase --abort
+        git push origin master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
