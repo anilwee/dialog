@@ -1,0 +1,46 @@
+name: Generate and Host LK EPG
+
+on:
+  schedule:
+    - cron: "0 13 * * *" # Runs daily at 01:00 AM NZT (13:00 UTC)
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  generate-lk-epg:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Download Existing EPG File
+      run: |
+        wget -O epg.xml https://raw.githubusercontent.com/${{ github.repository }}/main/public/epg.xml
+
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Run Filtering Script
+      run: |
+        python filter_lk_epg.py epg.xml lk.xml
+
+    - name: Ensure Public Folder Exists
+      run: |
+        mkdir -p public
+
+    - name: Move Filtered File to Public Directory
+      run: |
+        mv lk.xml public/lk.xml
+
+    - name: Commit and Push Filtered File
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add public/lk.xml
+        git commit -m "Update LK EPG file (filtered)" --allow-empty
+        git pull --rebase origin main  # Ensure you are up-to-date
+        git push origin main           # Push the changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
