@@ -17,6 +17,10 @@ jobs:
       run: |
         wget -O epg.xml https://raw.githubusercontent.com/${{ github.repository }}/main/public/epg.xml
 
+    - name: Validate XML File
+      run: |
+        xmllint --noout epg.xml || exit 1
+
     - name: Install Python
       uses: actions/setup-python@v4
       with:
