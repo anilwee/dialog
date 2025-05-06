@@ -46,6 +46,10 @@ jobs:
       run: |
         wget -O public/epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
 
+    - name: Echo Message for GZIP File Confirmation
+      run: |
+        echo "The file epg.xml.gz has been successfully downloaded and saved in GZIP format."
+
     - name: Commit and Push Updated GZIP File
       run: |
         git config --global user.name "GitHub Actions Bot"
