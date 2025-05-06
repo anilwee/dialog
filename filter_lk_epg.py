@@ -10,8 +10,14 @@ def filter_epg(input_file, output_file, filtered_channels):
         output_file (str): Path to the output filtered XML file.
         filtered_channels (list): List of channel display names to include.
     """
-    # Parse the input XML file
-    tree = ET.parse(input_file)
+    try:
+        # Parse the input XML file
+        tree = ET.parse(input_file)
+    except ET.ParseError as e:
+        # Log the error and exit
+        print(f"Error parsing XML file: {e}")
+        sys.exit(1)
+
     root = tree.getroot()
 
     # Create a new root for the filtered XML
