@@ -44,18 +44,27 @@ jobs:
 
     - name: Download XML File in GZIP Format
       run: |
-        wget -O public/epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
 
-    - name: Echo Message for GZIP File Confirmation
+    - name: Decompress XML File
       run: |
-        echo "The file epg.xml.gz has been successfully downloaded and saved in GZIP format."
+        gunzip -c epg.xml.gz > epg.xml  # Extract epg.xml without removing epg.xml.gz
 
-    - name: Commit and Push Updated GZIP File
+    - name: Ensure Public Folder Exists
+      run: |
+        mkdir -p public
+
+    - name: Move Files to Public Directory
+      run: |
+        mv epg.xml.gz public/epg.xml.gz
+        mv epg.xml public/epg.xml
+
+    - name: Commit and Push Updated Files
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add public/epg.xml.gz
-        git commit -m "Update EPG file in GZIP format (forced refresh)" --allow-empty
+        git add public/epg.xml.gz public/epg.xml
+        git commit -m "Update EPG files (compressed and extracted)" --allow-empty
         git pull --rebase origin main  # Ensure you are up-to-date
         git push origin main           # Push the changes
       env:
