@@ -32,7 +32,12 @@ jobs:
         run: ls -l
 
       - name: Debug: View dialog.xml
-        run: cat dialog.xml || echo "dialog.xml not created or empty."
+        run: |
+          if [ -e dialog.xml ]; then
+            cat dialog.xml
+          else
+            echo "dialog.xml not created or empty."
+          fi
 
       - name: Check for changes
         id: check_changes
