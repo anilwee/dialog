@@ -13,11 +13,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Install Required Tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libxml2-utils
-
     - name: Download Existing EPG File
       run: |
         wget -O epg.xml https://raw.githubusercontent.com/${{ github.repository }}/main/public/epg.xml
