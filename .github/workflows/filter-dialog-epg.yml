@@ -17,14 +17,21 @@ jobs:
       run: |
         wget -O epg.xml.gz https://raw.githubusercontent.com/${{ github.repository }}/main/public/epg.xml.gz
 
+    - name: Verify File Exists
+      run: |
+        echo "Verifying downloaded file:"
+        ls -l epg.xml.gz
+
     - name: Install Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    - name: Run Filtering Script
+    - name: Run Filtering Script with Debugging
       run: |
         python filter_dialog_epg.py epg.xml.gz dialog.xml
+        echo "Contents of output directory after filtering:"
+        ls -l
 
     - name: Ensure Public Folder Exists
       run: |
