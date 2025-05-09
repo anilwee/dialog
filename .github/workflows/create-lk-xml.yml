@@ -26,16 +26,8 @@ jobs:
         run: pip install requests
 
       - name: Generate lk.xml
-        run: python scripts/generate_lk_xml.py
-
-      - name: Check if lk.xml exists
-        id: check_file
-        run: |
-          if [ -f public/lk.xml ]; then
-            echo "lk.xml already exists in the public folder."
-          else
-            echo "lk.xml does not exist in the public folder."
-          fi
+        # Updated path if script is in the root folder
+        run: python generate_lk_xml.py
 
       - name: Replace lk.xml if successful
         if: success()
