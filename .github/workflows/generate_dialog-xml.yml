@@ -28,15 +28,29 @@ jobs:
       - name: Generate dialog.xml
         run: python generate_dialog_xml.py
 
-      - name: Debug: List public directory
-        run: ls -l public || echo "No files found in public/ directory."
+      - name: List public directory
+        run: ls -l public
 
-      - name: Debug: View dialog.xml
-        if: success() && env.commit_changes == 'true'
-        run: cat public/dialog.xml || echo "dialog.xml not created."
+      - name: View dialog.xml
+        run: cat public/dialog.xml
 
       - name: Check for changes
         id: check_changes
         run: |
-        -run context=> create in env settings
-Here is the corrected YAML workflow file and a simple explanation for its sections.
+          if git diff --quiet; then
+            echo "No changes to commit."
+            echo "commit_changes=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected."
+            echo "commit_changes=true" >> $GITHUB_ENV
+
+      - name: Commit and push changes
+        if: env.commit_changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/dialog.xml
+          git commit -m "Update dialog.xml"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
