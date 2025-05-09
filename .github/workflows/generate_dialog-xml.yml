@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    # Runs daily at 01:00 AKL (Auckland Time, UTC+12 or UTC+13 during daylight savings)
+    # Runs daily at 01:00 AKL (UTC+12 or UTC+13 during daylight savings)
     - cron: '0 13 * * *'
   workflow_dispatch: # Allows manual triggering of the workflow
 
@@ -27,6 +27,12 @@ jobs:
 
       - name: Generate dialog.xml
         run: python generate_dialog_xml.py
+
+      - name: Debug: List public directory
+        run: ls -l public
+
+      - name: Debug: View dialog.xml
+        run: cat public/dialog.xml
 
       - name: Check for changes
         id: check_changes
