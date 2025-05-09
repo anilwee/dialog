@@ -26,7 +26,7 @@ jobs:
         run: pip install requests xmltodict
 
       - name: Generate dialog.xml
-        run: python scripts/generate_dialog_xml.py
+        run: python generate_dialog_xml.py
 
       - name: Check for changes
         id: check_changes
