@@ -2,7 +2,7 @@ import os
 import requests
 import xml.etree.ElementTree as ET
 
-# URL of the source lk.xml file
+# URL to fetch the lk.xml file
 SOURCE_URL = "https://raw.githubusercontent.com/anilwee/dialog/main/public/lk.xml"
 
 # Path to save the generated dialog.xml file
