@@ -14,3 +14,6 @@ secrets/
 # Ignore system files
 .DS_Store
 Thumbs.db
+
+# Ignore debug_invalid_xml.xml
+debug_invalid_xml.xml
