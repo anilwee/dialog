@@ -28,11 +28,11 @@ jobs:
       - name: Generate dialog.xml
         run: python generate_dialog_xml.py
 
-      - name: List public directory
-        run: ls -l public
+      - name: Debug: List main directory
+        run: ls -l
 
-      - name: View dialog.xml
-        run: cat public/dialog.xml
+      - name: Debug: View dialog.xml
+        run: cat dialog.xml || echo "dialog.xml not created or empty."
 
       - name: Check for changes
         id: check_changes
@@ -50,7 +50,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/dialog.xml
+          git add dialog.xml
           git commit -m "Update dialog.xml"
           git push
         env:
