@@ -24,7 +24,14 @@ def customize_xml(xml_content):
     """
     Customize the XML content as needed.
     """
-    root = ET.fromstring(xml_content)
+    try:
+        root = ET.fromstring(xml_content)
+    except ET.ParseError as e:
+        print(f"Error parsing XML: {e}")
+        # Save the problematic XML to a file for debugging
+        with open("debug_invalid_xml.xml", "w", encoding="utf-8") as debug_file:
+            debug_file.write(xml_content)
+        raise
 
     # Example modification: Add a custom attribute to the root
     root.set("source", "customized")
@@ -45,8 +52,12 @@ def main():
     original_xml = fetch_and_extract_xml(SOURCE_URL)
     
     print("Customizing XML...")
-    customized_xml = customize_xml(original_xml)
-    
+    try:
+        customized_xml = customize_xml(original_xml)
+    except ET.ParseError:
+        print("Failed to process the XML due to parsing errors.")
+        return
+
     print(f"Saving XML to {OUTPUT_FILE}...")
     save_xml_to_file(customized_xml, OUTPUT_FILE)
     print("Done!")
