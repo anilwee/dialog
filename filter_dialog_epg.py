@@ -1,51 +1,58 @@
 import gzip
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta, timezone
+import os
 
-# File paths
-INPUT_FILE = "repo_folder/epg.xml.gz"  # Update this to the correct relative path of the XML file in your repo.
+# Input and output file paths
+INPUT_FILE = "epg.xml.gz"  # Update this path if the file is in a different location
 OUTPUT_FILE = "dialog.xml"
 
-# List of allowed channels
-ALLOWED_CHANNELS = [
-    "ADA DERANA 24", "ART Television", "Buddhist TV", "Channel C", 
-    "Channel One", "Citi Hitz", "Damsathara TV", "God TV/Swarga TV", 
-    "Haritha TV", "Hi TV", "Hiru TV", "ITN", "Jaya TV", "Monara TV", 
-    "Nethra TV", "Pragna TV", "Rangiri Sri Lanka", "Ridee TV", 
-    "Rupavahini", "Shakthi TV", "Shraddha TV", "Sirasa TV", 
-    "Siyatha TV", "Supreme TV", "Swarnawahini Live", 
-    "Swarnawahini", "TV Derana", "TV Didula", "TV1 Sri Lanka", 
-    "Vasantham TV"
+# List of channels to filter
+FILTERED_CHANNELS = [
+    "ADA DERANA 24", "ART Television", "Buddhist TV", "Channel C", "Channel One",
+    "Citi Hitz", "Damsathara TV", "God TV/Swarga TV", "Haritha TV", "Hi TV",
+    "Hiru TV", "ITN", "Jaya TV", "Monara TV", "Nethra TV", "Pragna TV",
+    "Rangiri Sri Lanka", "Ridee TV", "Rupavahini", "Shakthi TV", "Shraddha TV",
+    "Sirasa TV", "Siyatha TV", "Supreme TV", "Swarnawahini Live", "Swarnawahini",
+    "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV"
 ]
 
-# Time limit for filtering (48 hours from now)
-TIME_LIMIT = datetime.now(timezone.utc) + timedelta(hours=48)
-
 def parse_and_filter():
-    # Open the gzipped XML file
+    """
+    Parse the compressed EPG XML file, filter for specific channels, and generate a new XML file.
+    """
+    if not os.path.exists(INPUT_FILE):
+        print(f"Error: The file {INPUT_FILE} was not found.")
+        return
+
     try:
+        # Open the compressed XML file
         with gzip.open(INPUT_FILE, 'rt', encoding='utf-8') as f:
             tree = ET.parse(f)
             root = tree.getroot()
 
-            # Filter channels
-            for channel in root.findall("channel"):
-                channel_id = channel.get("id")
-                if channel_id not in ALLOWED_CHANNELS:
-                    root.remove(channel)
+        # Create a new root for the filtered XML
+        filtered_root = ET.Element('tv')
 
-            # Filter programmes
-            for programme in root.findall("programme"):
-                channel_id = programme.get("channel")
-                start_time = datetime.strptime(programme.get("start")[:12], "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
-                if channel_id not in ALLOWED_CHANNELS or start_time > TIME_LIMIT:
-                    root.remove(programme)
+        # Map display-name to channel ID
+        channel_id_map = {}
+        for channel in root.findall('channel'):
+            display_name = channel.find('display-name').text
+            if display_name in FILTERED_CHANNELS:
+                filtered_root.append(channel)
+                channel_id_map[channel.attrib['id']] = display_name
 
-            # Write the filtered XML to a new file
-            tree.write(OUTPUT_FILE, encoding="utf-8", xml_declaration=True)
-    except FileNotFoundError:
-        print(f"Error: The file {INPUT_FILE} was not found.")
-        raise
+        # Copy only programs belonging to the filtered channels
+        for programme in root.findall('programme'):
+            if programme.attrib['channel'] in channel_id_map:
+                filtered_root.append(programme)
+
+        # Write the filtered XML to the output file
+        filtered_tree = ET.ElementTree(filtered_root)
+        filtered_tree.write(OUTPUT_FILE, encoding='utf-8', xml_declaration=True)
+        print(f"Filtered EPG file created: {OUTPUT_FILE}")
+
+    except ET.ParseError as e:
+        print(f"Error parsing XML file: {e}")
 
 if __name__ == "__main__":
     parse_and_filter()
