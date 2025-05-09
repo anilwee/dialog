@@ -29,11 +29,11 @@ jobs:
         run: python generate_dialog_xml.py
 
       - name: Debug: List main directory
-        run: ls -l
+        run: ls -la
 
       - name: Debug: View dialog.xml
         run: |
-          if [ -e dialog.xml ]; then
+          if [ -f dialog.xml ]; then
             cat dialog.xml
           else
             echo "dialog.xml not created or empty."
