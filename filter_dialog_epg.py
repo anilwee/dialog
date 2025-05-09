@@ -26,9 +26,11 @@ def parse_and_filter():
 
     try:
         # Open the compressed XML file
+        print(f"Opening file: {INPUT_FILE}")
         with gzip.open(INPUT_FILE, 'rt', encoding='utf-8') as f:
             tree = ET.parse(f)
             root = tree.getroot()
+        print(f"File opened successfully: {INPUT_FILE}")
 
         # Create a new root for the filtered XML
         filtered_root = ET.Element('tv')
