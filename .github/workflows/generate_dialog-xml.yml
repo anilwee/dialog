@@ -43,10 +43,10 @@ jobs:
         id: check_changes
         run: |
           if git diff --quiet; then
-            echo "No changes to commit." >> $GITHUB_ENV
+            echo "No changes to commit."
             echo "commit_changes=false" >> $GITHUB_ENV
           else
-            echo "Changes detected." >> $GITHUB_ENV
+            echo "Changes detected."
             echo "commit_changes=true" >> $GITHUB_ENV
           fi
 
