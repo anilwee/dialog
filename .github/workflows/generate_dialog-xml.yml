@@ -42,19 +42,18 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet; then
-            echo "No changes to commit." >> $GITHUB_ENV
-            echo "commit_changes=false" >> $GITHUB_ENV
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "commit_changes=false" >> $GITHUB_OUTPUT
           else
-            echo "Changes detected." >> $GITHUB_ENV
-            echo "commit_changes=true" >> $GITHUB_ENV
+            echo "commit_changes=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit and push changes
-        if: env.commit_changes == 'true'
+        if: steps.check_changes.outputs.commit_changes == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull
           git add dialog.xml
           git commit -m "Update dialog.xml"
           git push
