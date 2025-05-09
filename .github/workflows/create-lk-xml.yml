@@ -26,8 +26,15 @@ jobs:
         run: pip install requests
 
       - name: Generate lk.xml
-        # Updated path if script is in the root folder
         run: python generate_lk_xml.py
+
+      - name: Clean up debug file
+        if: always()
+        run: |
+          if [ -f debug_invalid_xml.xml ]; then
+            echo "Cleaning up debug_invalid_xml.xml..."
+            rm debug_invalid_xml.xml
+          fi
 
       - name: Replace lk.xml if successful
         if: success()
