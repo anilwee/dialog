@@ -1,0 +1,51 @@
+name: Generate and Host dialog.xml
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Runs daily at 01:00 AKL (Auckland Time, UTC+12 or UTC+13 during daylight savings)
+    - cron: '0 13 * * *'
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  generate-dialog-xml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests xmltodict
+
+      - name: Generate dialog.xml
+        run: python scripts/generate_dialog_xml.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            echo "commit_changes=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected."
+            echo "commit_changes=true" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and push changes
+        if: env.commit_changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/dialog.xml
+          git commit -m "Update dialog.xml"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
