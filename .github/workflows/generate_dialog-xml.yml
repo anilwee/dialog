@@ -43,6 +43,7 @@ jobs:
           else
             echo "Changes detected."
             echo "commit_changes=true" >> $GITHUB_ENV
+          fi
 
       - name: Commit and push changes
         if: env.commit_changes == 'true'
