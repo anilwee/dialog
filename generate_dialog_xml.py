@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 SOURCE_URL = "https://raw.githubusercontent.com/anilwee/dialog/main/public/lk.xml"
 
 # Path to save the generated dialog.xml file
-OUTPUT_FILE = "public/dialog.xml"
+OUTPUT_FILE = "dialog.xml"
 
 def fetch_lk_xml(url):
     """
@@ -48,7 +48,6 @@ def save_xml_to_file(xml_content, file_path):
     """
     Save the XML content to the specified file.
     """
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as file:
         file.write(xml_content)
 
