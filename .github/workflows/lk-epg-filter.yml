@@ -24,7 +24,7 @@ jobs:
 
     - name: Preprocess XML File
       run: |
-        sed -i 's/&\([^a-zA-Z#]\)/\&amp;\1/g' epg.xml
+        sed -i 's/&\([a-zA-Z0-9#]\)/\&amp;\1/g' epg.xml
 
     - name: Validate XML File
       run: |
