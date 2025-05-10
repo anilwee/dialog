@@ -14,10 +14,11 @@ def translate_epg():
         # Ensure the output directory exists
         os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
-        # Parse the input XML file
+        # Check if input file exists
         if not os.path.exists(INPUT_FILE):
             raise FileNotFoundError(f"Input file '{INPUT_FILE}' does not exist.")
 
+        # Parse the input XML file
         tree = ET.parse(INPUT_FILE)
         root = tree.getroot()
 
@@ -40,8 +41,10 @@ def translate_epg():
 
     except FileNotFoundError as fnf_error:
         print(f"File Not Found Error: {fnf_error}")
+        raise
     except Exception as e:
         print(f"Unexpected error: {e}")
+        raise
 
 if __name__ == "__main__":
     translate_epg()
