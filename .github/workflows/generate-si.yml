@@ -24,18 +24,25 @@ jobs:
 
     - name: Debug Generated Output
       run: |
-        echo "Listing contents of public directory:"
-        ls -l public
+        echo "Checking contents of the public directory..."
+        ls -l public || echo "Public directory not found."
 
-        echo "Printing contents of si.xml if it exists:"
-        cat public/si.xml || echo "si.xml not found"
+        echo "Checking if si.xml exists..."
+        if [ -f public/si.xml ]; then
+          echo "si.xml exists:"
+          cat public/si.xml
+        else
+          echo "Error: si.xml was not created!"
+          exit 1
+        fi
 
     - name: Commit and Push Translated File
+      if: success()
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
         git add public/si.xml
-        git commit -m "Update Sinhala translated si.xml file" --allow-empty
+        git commit -m "Update Sinhala translated si.xml file"
         git pull --rebase origin main
         git push origin main
       env:
