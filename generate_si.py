@@ -1,6 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
-from googletrans import Translator  # Install via `pip install googletrans==4.0.0-rc1`
+from deep_translator import GoogleTranslator  # Install via `pip install deep-translator`
 
 # Input and output file paths
 INPUT_FILE = "public/lk.xml"
@@ -23,17 +23,23 @@ def translate_epg():
         root = tree.getroot()
 
         # Initialize the translator
-        translator = Translator()
+        translator = GoogleTranslator(source='en', target='si')
 
         # Translate titles and descriptions
         for programme in root.findall('programme'):
             title = programme.find('title')
             if title is not None and title.text:
-                title.text = translator.translate(title.text, src='en', dest='si').text
+                try:
+                    title.text = translator.translate(title.text)
+                except Exception as e:
+                    print(f"Failed to translate title: {title.text}. Error: {e}")
 
             description = programme.find('desc')
             if description is not None and description.text:
-                description.text = translator.translate(description.text, src='en', dest='si').text
+                try:
+                    description.text = translator.translate(description.text)
+                except Exception as e:
+                    print(f"Failed to translate description: {description.text}. Error: {e}")
 
         # Write the translated XML to the output file
         tree.write(OUTPUT_FILE, encoding='utf-8', xml_declaration=True)
