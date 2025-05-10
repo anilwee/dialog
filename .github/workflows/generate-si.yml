@@ -22,6 +22,14 @@ jobs:
       run: |
         python3 generate_si.py
 
+    - name: Debug Generated Output
+      run: |
+        echo "Listing contents of public directory:"
+        ls -l public
+
+        echo "Printing contents of si.xml if it exists:"
+        cat public/si.xml || echo "si.xml not found"
+
     - name: Commit and Push Translated File
       run: |
         git config --global user.name "GitHub Actions Bot"
