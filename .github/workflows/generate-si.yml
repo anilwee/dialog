@@ -16,7 +16,7 @@ jobs:
     - name: Install Required Python Dependencies
       run: |
         python3 -m pip install --upgrade pip
-        pip install googletrans==4.0.0-rc1
+        pip install deep-translator
 
     - name: Generate Sinhala Translated EPG
       run: |
@@ -31,7 +31,7 @@ jobs:
         if [ -f public/si.xml ]; then
           echo "si.xml exists:"
           cat public/si.xml
-        else
+        else:
           echo "Error: si.xml was not created!"
           exit 1
         fi
