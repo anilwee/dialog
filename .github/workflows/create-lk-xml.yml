@@ -6,7 +6,7 @@ on:
       - main
   schedule:
     # Runs daily at 00:30 AKL (Auckland Time, UTC+12 or UTC+13 during daylight savings)
-    - cron: '30 12 * * *'
+   
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
