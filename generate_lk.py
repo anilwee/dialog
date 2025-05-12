@@ -11,7 +11,7 @@ FILTERED_CHANNELS = [
     "Hiru TV", "ITN", "Jaya TV", "Monara TV", "Nethra TV", "Pragna TV",
     "Rangiri Sri Lanka", "Ridee TV", "Rupavahini", "Shakthi TV", "Shraddha TV",
     "Sirasa TV", "Siyatha TV", "Supreme TV", "Swarnawahini Live", "Swarnawahini",
-    "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV", "ThePapare 1""
+    "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV", "ThePapare 1"
 ]
 
 def parse_and_filter():
