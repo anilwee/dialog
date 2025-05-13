@@ -1,0 +1,15 @@
+# Direct translation mappings (case insensitive)
+# Corrected translations as per request
+"weather": "කාළගුණය"
+"entertainment": "විනෝදාස්වාදය"
+"news": "ප්‍රවෘත්ති"
+"business": "ව්‍යාපාර"
+"technology": "තාක්ෂණය"
+"health": "සෞඛ්‍ය"
+"science": "විද්‍යාව"
+"world": "ලෝකය"
+"sports": "ක්‍රීඩා"
+"paththre wisthare": "පත්තෙරේ විස්තරේ"
+
+# Add more direct mappings as needed
+# Format: "english text": "sinhalese translation"
