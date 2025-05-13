@@ -46,25 +46,59 @@ jobs:
       run: |
         wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
 
-    - name: Decompress XML File
+    - name: Get remote file timestamp
+      id: remote_timestamp
+      run: |
+        # Get the Last-Modified header from the remote file
+        TIMESTAMP=$(curl -sI https://watch.livecricketsl.xyz/epg/epg.xml.gz | grep -i Last-Modified | cut -d' ' -f2-)
+        # Convert to timestamp for comparison
+        TIMESTAMP=$(date -d "$TIMESTAMP" +%s)
+        echo "remote_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+
+    - name: Get local file timestamp (if exists)
+      id: local_timestamp
+      run: |
+        if [ -f "public/epg.xml.gz" ]; then
+          TIMESTAMP=$(date -r "public/epg.xml.gz" +%s)
+          echo "local_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+        else
+          echo "local_timestamp=0" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Check if file is newer
+      id: check_newer
+      run: |
+        if [ ${{ steps.remote_timestamp.outputs.remote_timestamp }} -gt ${{ steps.local_timestamp.outputs.local_timestamp }} ]; then
+          echo "file_is_newer=true" >> $GITHUB_OUTPUT
+          echo "Newer file available, proceeding with download"
+        else
+          echo "file_is_newer=false" >> $GITHUB_OUTPUT
+          echo "Local file is up to date, skipping update"
+        fi
+
+    - name: Decompress XML File (if newer)
+      if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         gunzip -c epg.xml.gz > epg.xml  # Extract epg.xml without removing epg.xml.gz
 
     - name: Ensure Public Folder Exists
+      if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         mkdir -p public
 
-    - name: Move Files to Public Directory
+    - name: Move Files to Public Directory (if newer)
+      if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         mv epg.xml.gz public/epg.xml.gz
         mv epg.xml public/epg.xml
 
-    - name: Commit and Push Updated Files
+    - name: Commit and Push Updated Files (if newer)
+      if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
         git add public/epg.xml.gz public/epg.xml
-        git commit -m "Update EPG files (compressed and extracted)" --allow-empty
+        git commit -m "Update EPG files (compressed and extracted) [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
         git pull --rebase origin main  # Ensure you are up-to-date
         git push origin main           # Push the changes
       env:
