@@ -25,20 +25,18 @@ jobs:
         sudo apt-get install -y libxml2-utils xmlstarlet
         pip install defusedxml requests
 
-    - name: Create public directory
+    - name: Create directories
       run: mkdir -p public
 
     - name: Run EPG Filter
-      run: |
-        python3 generate_lk.py \
-          -i "https://raw.githubusercontent.com/anilwee/dialog/main/public/epg.xml" \
-          -o "public/lk.xml"
+      run: python3 generate_lk.py
 
     - name: Verify Output
       run: |
         if [ -f "public/lk.xml" ]; then
           echo "EPG generated successfully"
           echo "Channels found: $(grep -c '<channel' public/lk.xml)"
+          echo "Programs found: $(grep -c '<programme' public/lk.xml)"
         else
           echo "Error: Failed to generate EPG"
           exit 1
