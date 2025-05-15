@@ -26,23 +26,44 @@ class EPGFilter:
     
     CHANNELS = [
         # News
-        r"ADA DERANA(?: 24)?", r"Hiru TV", r"Sirasa TV", r"Swarnawahini(?: Live)?",
-        r"TV Derana", r"ITN", r"Rupavahini", r"Jaya TV",
+        r"(?i)ada\s*derana(?: 24)?", 
+        r"(?i)hiru\s*tv", 
+        r"(?i)sirasa\s*tv", 
+        r"(?i)swarnawahini(?: live)?",
+        r"(?i)tv\s*derana", 
+        r"(?i)itn", 
+        r"(?i)rupavahini", 
+        r"(?i)jaya\s*tv",
         
         # Entertainment
-        r"ART Television", r"Channel C", r"Channel One", r"Hi TV",
-        r"Shakthi TV", r"TV1 Sri Lanka", r"Vasantham TV",
+        r"(?i)art\s*television", 
+        r"(?i)channel\s*c", 
+        r"(?i)channel\s*one", 
+        r"(?i)hi\s*tv",
+        r"(?i)shakthi\s*tv", 
+        r"(?i)tv1\s*sri\s*lanka", 
+        r"(?i)vasantham\s*tv",
         
         # Religious
-        r"Buddhist TV", r"God TV/Swarga TV", r"Shraddha TV",
+        r"(?i)buddhist\s*tv", 
+        r"(?i)god\s*tv/swarga\s*tv", 
+        r"(?i)shraddha\s*tv",
         
         # Sports
-        r"ThePapare \d", r"Citi Hitz",
+        r"(?i)thepapare\s*\d", 
+        r"(?i)citi\s*hitz",
         
         # Regional
-        r"Damsathara TV", r"Haritha TV", r"Monara TV", r"Nethra TV",
-        r"Pragna TV", r"Rangiri Sri Lanka", r"Ridee TV", r"Supreme TV",
-        r"Siyatha TV", r"TV Didula"
+        r"(?i)damsathara\s*tv", 
+        r"(?i)haritha\s*tv", 
+        r"(?i)monara\s*tv", 
+        r"(?i)nethra\s*tv",
+        r"(?i)pragna\s*tv", 
+        r"(?i)rangiri\s*sri\s*lanka", 
+        r"(?i)ridee\s*tv", 
+        r"(?i)supreme\s*tv",
+        r"(?i)siyatha\s*tv", 
+        r"(?i)tv\s*didula"
     ]
 
     def __init__(self, input_file, output_file):
@@ -78,8 +99,7 @@ class EPGFilter:
         try:
             if not channel_name:
                 return False
-            return any(re.search(pattern, channel_name, re.IGNORECASE) 
-                      for pattern in self.CHANNELS)
+            return any(re.search(pattern, channel_name) for pattern in self.CHANNELS)
         except Exception as e:
             logging.warning(f"Channel matching error: {str(e)}")
             return False
@@ -102,10 +122,12 @@ class EPGFilter:
             # Process channels
             for channel in root.findall('ns:channel', self.namespace):
                 name_elem = channel.find('ns:display-name', self.namespace)
-                if name_elem is not None and self._match_channel(name_elem.text):
-                    new_root.append(channel)
-                    self.channel_map[channel.attrib['id']] = name_elem.text
-                    logging.info(f"Added channel: {name_elem.text}")
+                if name_elem is not None:
+                    logging.debug(f"Checking channel: {name_elem.text}")
+                    if self._match_channel(name_elem.text):
+                        new_root.append(channel)
+                        self.channel_map[channel.attrib['id']] = name_elem.text
+                        logging.info(f"Added channel: {name_elem.text}")
             
             # Process programs
             for program in root.findall('ns:programme', self.namespace):
@@ -155,6 +177,11 @@ def main():
         help='Output filtered XML file path'
     )
     args = parser.parse_args()
+    
+    # Check if input file exists
+    if not os.path.exists(args.input):
+        logging.error(f"Input file not found: {args.input}")
+        exit(1)
     
     # Ensure output directory exists
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
