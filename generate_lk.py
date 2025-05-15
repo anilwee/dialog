@@ -9,6 +9,7 @@ import os
 import re
 import logging
 import argparse
+import requests  # Added for remote file download
 
 # Configure logging
 logging.basicConfig(
@@ -22,26 +23,12 @@ logging.basicConfig(
 
 class EPGFilter:
     """Handles filtering of EPG XML data for Sri Lankan channels"""
-
+    
     CHANNELS = [
         # News
-        r"ADA DERANA(?: 24)?", r"Hiru TV", r"Sirasa TV", r"Swarnawahini(?: Live)?",
-        r"TV Derana", r"ITN", r"Rupavahini", r"Jaya TV",
-
-        # Entertainment
-        r"ART Television", r"Channel C", r"Channel One", r"Hi TV",
-        r"Shakthi TV", r"TV1 Sri Lanka", r"Vasantham TV",
-
-        # Religious
-        r"Buddhist TV", r"God TV/Swarga TV", r"Shraddha TV",
-
-        # Sports
-        r"ThePapare \d", r"Citi Hitz",
-
-        # Regional
-        r"Damsathara TV", r"Haritha TV", r"Monara TV", r"Nethra TV",
-        r"Pragna TV", r"Rangiri Sri Lanka", r"Ridee TV", r"Supreme TV",
-        r"Siyatha TV", r"TV Didula"
+        r"(?i)ada\s*derana(?: 24)?", 
+        r"(?i)hiru\s*tv", 
+        # ... (keep your existing channel patterns)
     ]
 
     def __init__(self, input_file, output_file):
@@ -51,92 +38,56 @@ class EPGFilter:
         self.channel_map = {}
         self.program_count = 0
 
-    def _sanitize_xml(self):
-        """Pre-process XML to fix common issues"""
-        try:
-            with open(self.input_file, 'r', encoding='utf-8', errors='replace') as f:
-                content = f.read()
+    # ... (keep all your existing methods)
 
-            # Fix common XML issues
-            content = re.sub(r'&(?!(amp|lt|gt|quot|apos);)', '&amp;', content)
-            content = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F]', '', content)
-
-            temp_file = f"{self.input_file}.tmp"
-            with open(temp_file, 'w', encoding='utf-8') as f:
-                f.write(content)
-
-            return temp_file
-
-        except Exception as e:
-            logging.error(f"XML sanitization failed: {str(e)}")
-            raise
-
-    def _match_channel(self, channel_name):
-        """Fuzzy match channel names with regex patterns"""
-        if not channel_name:
-            return False
-        return any(re.search(pattern, channel_name, re.IGNORECASE)
-                   for pattern in self.CHANNELS)
-
-    def process(self):
-        """Main processing method"""
-        temp_file = None
-        try:
-            temp_file = self._sanitize_xml()
-
-            tree = parse(temp_file)
-            root = tree.getroot()
-
-            ET.register_namespace('', self.namespace['ns'])
-            new_root = ET.Element('tv', self.namespace)
-
-            for channel in root.findall('ns:channel', self.namespace):
-                name_elem = channel.find('ns:display-name', self.namespace)
-                if name_elem is not None and self._match_channel(name_elem.text):
-                    new_root.append(channel)
-                    self.channel_map[channel.attrib['id']] = name_elem.text
-                    logging.info(f"Added channel: {name_elem.text}")
-
-            for program in root.findall('ns:programme', self.namespace):
-                if program.attrib['channel'] in self.channel_map:
-                    new_root.append(program)
-                    self.program_count += 1
-
-            ET.ElementTree(new_root).write(
-                self.output_file,
-                encoding='utf-8',
-                xml_declaration=True,
-                short_empty_elements=False
-            )
-
-            logging.info(
-                f"Successfully created {self.output_file}\n"
-                f"Channels: {len(self.channel_map)}\n"
-                f"Programs: {self.program_count}"
-            )
-            return True
-
-        except ET.ParseError as e:
-            logging.error(f"XML parsing error: {str(e)}")
-            return False
-        except Exception as e:
-            logging.error(f"Unexpected error: {str(e)}", exc_info=True)
-            return False
-        finally:
-            if temp_file and os.path.exists(temp_file):
-                os.remove(temp_file)
+def download_file(url, local_path):
+    """Download file from URL"""
+    try:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        with open(local_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return True
+    except Exception as e:
+        logging.error(f"Download failed: {str(e)}")
+        return False
 
 def main():
-    parser = argparse.ArgumentParser(description='Filter Sri Lankan channels from XMLTV EPG data')
-    parser.add_argument('-i', '--input', default='public/epg.xml', help='Input EPG XML file path')
-    parser.add_argument('-o', '--output', default='public/lk.xml', help='Output filtered XML file path')
+    parser = argparse.ArgumentParser(
+        description='Filter Sri Lankan channels from XMLTV EPG data'
+    )
+    parser.add_argument(
+        '-i', '--input', 
+        default='https://raw.githubusercontent.com/anilwee/dialog/main/public/epg.xml',
+        help='Input EPG XML URL or path'
+    )
+    parser.add_argument(
+        '-o', '--output',
+        default='public/lk.xml',
+        help='Output filtered XML file path'
+    )
     args = parser.parse_args()
-
+    
+    # Determine if input is URL or local path
+    local_input = 'temp_epg.xml' if args.input.startswith('http') else args.input
+    
+    # Download if URL
+    if args.input.startswith('http'):
+        if not download_file(args.input, local_input):
+            exit(1)
+    
+    # Ensure output directory exists
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
-
-    epg_filter = EPGFilter(args.input, args.output)
+    
+    # Run the filter
+    epg_filter = EPGFilter(local_input, args.output)
     if not epg_filter.process():
         exit(1)
+    
+    # Cleanup
+    if args.input.startswith('http') and os.path.exists(local_input):
+        os.remove(local_input)
 
 if __name__ == "__main__":
     main()
