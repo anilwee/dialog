@@ -1,12 +1,12 @@
-name: Generate and Publish LK EPG
+name: Generate Sri Lanka EPG
 
 on:
   schedule:
-    - cron: "30 0 * * *"  # 12:30 PM NZT daily
+    - cron: "30 0 * * *"
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  generate-lk-epg:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -23,26 +23,29 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libxml2-utils xmlstarlet
-        pip install defusedxml
+        pip install defusedxml requests
 
-    - name: Download EPG File
-      run: |
-        mkdir -p public
-        curl -L "https://example.com/epg.xml" -o public/epg.xml
+    - name: Create public directory
+      run: mkdir -p public
 
     - name: Run EPG Filter
-      run: python3 generate_lk.py
-
-    - name: Prepare GitHub Pages Content
       run: |
-        mkdir -p output
-        cp public/lk.xml output/lk.xml
-        touch output/.nojekyll
+        python3 generate_lk.py \
+          -i "https://raw.githubusercontent.com/anilwee/dialog/main/public/epg.xml" \
+          -o "public/lk.xml"
 
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Verify Output
+      run: |
+        if [ -f "public/lk.xml" ]; then
+          echo "EPG generated successfully"
+          echo "Channels found: $(grep -c '<channel' public/lk.xml)"
+        else
+          echo "Error: Failed to generate EPG"
+          exit 1
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./output
-        publish_branch: gh-pages
-        force_orphan: true
+        name: sri-lanka-epg
+        path: public/lk.xml
