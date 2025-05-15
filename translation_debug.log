@@ -1,0 +1,37 @@
+2025-05-15T05:27:07.702336 - Starting translation process
+2025-05-15T05:27:07.702394 - Config: {'input_file': 'public/lk.xml', 'output_file': 'public/si.xml', 'mappings_file': 'translation_mappings.yml', 'debug_log': 'translation_debug.log'}
+2025-05-15T05:27:07.702431 - Loaded mappings from translation_mappings.yml
+2025-05-15T05:27:07.704594 - Loaded 22 direct mappings
+2025-05-15T05:27:07.704626 - Starting translation: public/lk.xml → public/si.xml
+2025-05-15T05:27:07.742527 - Found 28 channels in XML
+2025-05-15T05:27:07.743001 - Checking channel: 
+2025-05-15T05:27:07.743022 - Checking channel: 
+2025-05-15T05:27:07.743040 - Checking channel: 
+2025-05-15T05:27:07.743057 - Checking channel: 
+2025-05-15T05:27:07.743072 - Checking channel: 
+2025-05-15T05:27:07.743088 - Checking channel: 
+2025-05-15T05:27:07.743104 - Checking channel: 
+2025-05-15T05:27:07.743119 - Checking channel: 
+2025-05-15T05:27:07.743135 - Checking channel: 
+2025-05-15T05:27:07.743151 - Checking channel: 
+2025-05-15T05:27:07.743167 - Checking channel: 
+2025-05-15T05:27:07.743188 - Checking channel: 
+2025-05-15T05:27:07.743205 - Checking channel: 
+2025-05-15T05:27:07.743221 - Checking channel: 
+2025-05-15T05:27:07.743237 - Checking channel: 
+2025-05-15T05:27:07.743252 - Checking channel: 
+2025-05-15T05:27:07.743268 - Checking channel: 
+2025-05-15T05:27:07.743284 - Checking channel: 
+2025-05-15T05:27:07.743299 - Checking channel: 
+2025-05-15T05:27:07.743315 - Checking channel: 
+2025-05-15T05:27:07.743330 - Checking channel: 
+2025-05-15T05:27:07.743346 - Checking channel: 
+2025-05-15T05:27:07.743361 - Checking channel: 
+2025-05-15T05:27:07.743377 - Checking channel: 
+2025-05-15T05:27:07.743392 - Checking channel: 
+2025-05-15T05:27:07.743408 - Checking channel: 
+2025-05-15T05:27:07.743423 - Checking channel: 
+2025-05-15T05:27:07.743438 - Checking channel: 
+2025-05-15T05:27:07.810840 - Successfully wrote output to public/si.xml
+2025-05-15T05:27:07.810879 - Output file verification: SUCCESS
+2025-05-15T05:27:07.813384 - Process completed: SUCCESS
