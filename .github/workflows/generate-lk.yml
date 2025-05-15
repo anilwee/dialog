@@ -1,162 +1,129 @@
-name: Generate LK EPG
+name: Generate Sri Lanka EPG Filter
 
 on:
   schedule:
-    - cron: "30 0 * * *" # Runs at 12:30 PM AKL (12:30 AM UTC)
-  workflow_dispatch: # Allows manual triggering
+    - cron: "30 0 * * *"  # Runs at 12:30 AM UTC (12:30 PM AKL)
+  workflow_dispatch:
 
 jobs:
-  generate-lk-epg:
+  filter-lk-channels:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Decode and Save OVPN Config
-      run: |
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
-        fold -w 64 raw_config.ovpn > config.ovpn
-        wc -L config.ovpn  # Check max line length
-
-    - name: Install OpenVPN
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openvpn python3
-        sudo openvpn --version
-
-    - name: Create Auth File
-      run: |
-        printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
-        chmod 600 auth.txt
-
-    - name: Run OpenVPN
-      run: |
-        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10  # Allow time for the VPN connection to establish
-
-    - name: Verify VPN Connection
-      run: |
-        ip a
-        curl --max-time 10 https://ipinfo.io
-
-    - name: Download XML File in GZIP Format
-      run: |
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
-
-    - name: Get remote file timestamp
-      id: remote_timestamp
-      run: |
-        TIMESTAMP=$(curl -sI https://watch.livecricketsl.xyz/epg/epg.xml.gz | grep -i Last-Modified | cut -d' ' -f2-)
-        TIMESTAMP=$(date -d "$TIMESTAMP" +%s)
-        echo "remote_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-
-    - name: Get local file timestamp (if exists)
-      id: local_timestamp
-      run: |
-        if [ -f "public/epg.xml.gz" ]; then
-          TIMESTAMP=$(date -r "public/epg.xml.gz" +%s)
-          echo "local_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-        else
-          echo "local_timestamp=0" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Check if file is newer
-      id: check_newer
-      run: |
-        if [ ${{ steps.remote_timestamp.outputs.remote_timestamp }} -gt ${{ steps.local_timestamp.outputs.local_timestamp }} ]; then
-          echo "file_is_newer=true" >> $GITHUB_OUTPUT
-          echo "Newer file available, proceeding with download"
-        else
-          echo "file_is_newer=false" >> $GITHUB_OUTPUT
-          echo "Local file is up to date, skipping update"
-          exit 0
-        fi
-
-    - name: Decompress XML File
-      if: steps.check_newer.outputs.file_is_newer == 'true'
-      run: |
-        gunzip -c epg.xml.gz > epg.xml
-
-    - name: Ensure Public Folder Exists
-      if: steps.check_newer.outputs.file_is_newer == 'true'
-      run: |
-        mkdir -p public
-
-    - name: Move EPG XML to Public Directory
-      if: steps.check_newer.outputs.file_is_newer == 'true'
-      run: |
-        mv epg.xml public/epg.xml
-
     - name: Set up Python
-      if: steps.check_newer.outputs.file_is_newer == 'true'
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.9'
 
-    - name: Generate LK XML
-      if: steps.check_newer.outputs.file_is_newer == 'true'
+    - name: Verify EPG File Exists
       run: |
-        cat << 'EOF' > generate_lk.py
-        import xml.etree.ElementTree as ET
+        if [ ! -f "public/epg.xml" ]; then
+          echo "Error: public/epg.xml not found!"
+          exit 1
+        fi
+        echo "Found EPG file with size: $(du -h public/epg.xml | cut -f1)"
 
-        # Input and output file paths
+    - name: Create Filter Script
+      run: |
+        cat << 'EOF' > filter_lk.py
+        import xml.etree.ElementTree as ET
+        import os
+        from datetime import datetime
+
+        # Configuration
         INPUT_FILE = "public/epg.xml"
         OUTPUT_FILE = "public/lk.xml"
-
-        # List of channels to filter
-        FILTERED_CHANNELS = [
-            "ADA DERANA 24", "ART Television", "Buddhist TV", "Channel C", "Channel One",
-            "Citi Hitz", "Damsathara TV", "God TV/Swarga TV", "Haritha TV", "Hi TV",
-            "Hiru TV", "ITN", "Jaya TV", "Monara TV", "Nethra TV", "Pragna TV",
-            "Rangiri Sri Lanka", "Ridee TV", "Rupavahini", "Shakthi TV", "Shraddha TV",
-            "Sirasa TV", "Siyatha TV", "Supreme TV", "Swarnawahini Live", "Swarnawahini",
-            "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV", "ThePapare 1"
+        CHANNELS = [
+            "ADA DERANA 24", "ART Television", "Buddhist TV", "Channel C", 
+            "Channel One", "Citi Hitz", "Damsathara TV", "God TV/Swarga TV", 
+            "Haritha TV", "Hi TV", "Hiru TV", "ITN", "Jaya TV", "Monara TV", 
+            "Nethra TV", "Pragna TV", "Rangiri Sri Lanka", "Ridee TV", 
+            "Rupavahini", "Shakthi TV", "Shraddha TV", "Sirasa TV", 
+            "Siyatha TV", "Supreme TV", "Swarnawahini Live", "Swarnawahini",
+            "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV", 
+            "ThePapare 1"
         ]
 
-        def parse_and_filter():
-            """
-            Parse the EPG XML file, filter for specific channels, and generate a new XML file.
-            """
+        def log(message):
+            print(f"[{datetime.now().isoformat()}] {message}")
+
+        def filter_epg():
             try:
+                log(f"Starting EPG filtering for {len(CHANNELS)} Sri Lankan channels")
+                
+                # Parse XML
                 tree = ET.parse(INPUT_FILE)
                 root = tree.getroot()
-
-                filtered_root = ET.Element('tv')
-                channel_id_map = {}
-
+                
+                # Create new XML structure
+                new_root = ET.Element('tv')
+                channel_map = {}
+                
+                # Filter channels
                 for channel in root.findall('channel'):
-                    display_name = channel.find('display-name').text
-                    if display_name in FILTERED_CHANNELS:
-                        filtered_root.append(channel)
-                        channel_id_map[channel.attrib['id']] = display_name
-
-                for programme in root.findall('programme'):
-                    if programme.attrib['channel'] in channel_id_map:
-                        filtered_root.append(programme)
-
-                filtered_tree = ET.ElementTree(filtered_root)
-                filtered_tree.write(OUTPUT_FILE, encoding='utf-8', xml_declaration=True)
-                print(f"Filtered LK file created: {OUTPUT_FILE}")
-
-            except FileNotFoundError:
-                print(f"Error: The file {INPUT_FILE} was not found.")
-            except ET.ParseError as e:
-                print(f"Error parsing XML file: {e}")
+                    name = channel.find('display-name').text
+                    if name in CHANNELS:
+                        new_root.append(channel)
+                        channel_map[channel.attrib['id']] = name
+                        log(f"Added channel: {name}")
+                
+                # Filter programs
+                program_count = 0
+                for program in root.findall('programme'):
+                    if program.attrib['channel'] in channel_map:
+                        new_root.append(program)
+                        program_count += 1
+                
+                # Write output
+                ET.ElementTree(new_root).write(
+                    OUTPUT_FILE,
+                    encoding='utf-8',
+                    xml_declaration=True
+                )
+                
+                log(f"Successfully created {OUTPUT_FILE}")
+                log(f"Total channels: {len(channel_map)}")
+                log(f"Total programs: {program_count}")
+                return True
+                
+            except Exception as e:
+                log(f"Error: {str(e)}")
+                return False
 
         if __name__ == "__main__":
-            parse_and_filter()
+            if not os.path.exists(INPUT_FILE):
+                log(f"Input file not found: {INPUT_FILE}")
+                exit(1)
+                
+            success = filter_epg()
+            exit(0 if success else 1)
         EOF
 
-        python3 generate_lk.py
+    - name: Run Filter Script
+      run: |
+        python3 filter_lk.py
 
-    - name: Commit and Push Updated Files
-      if: steps.check_newer.outputs.file_is_newer == 'true'
+    - name: Verify Output File
+      run: |
+        echo "Generated file details:"
+        ls -la public/lk.xml
+        echo "First 5 lines:"
+        head -n 5 public/lk.xml
+        echo "Channel count:"
+        grep -c '<channel' public/lk.xml
+        echo "Program count:"
+        grep -c '<programme' public/lk.xml
+
+    - name: Commit Changes
+      if: success()
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add public/epg.xml public/lk.xml
-        git commit -m "Update EPG files [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
+        git add public/lk.xml
+        git commit -m "Update Sri Lanka EPG [$(date +'%Y-%m-%d %H:%M:%S')]"
         git pull --rebase origin main
         git push origin main
       env:
