@@ -1,12 +1,12 @@
-name: Generate Sri Lanka EPG
+name: Generate and Publish LK EPG
 
 on:
   schedule:
-    - cron: "30 0 * * *"  # Runs at 12:30 AM UTC (12:30 PM AKL)
+    - cron: "30 0 * * *"  # 12:30 PM NZT daily
   workflow_dispatch:
 
 jobs:
-  generate-lk-epg:
+  build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -25,37 +25,24 @@ jobs:
         sudo apt-get install -y libxml2-utils xmlstarlet
         pip install defusedxml
 
-    - name: Ensure public directory exists
-      run: mkdir -p public
-
-    - name: Verify Input File
+    - name: Download EPG File
       run: |
-        if [ -f "public/epg.xml" ]; then
-          echo "Input file exists"
-          echo "First 20 lines:"
-          head -n 20 public/epg.xml
-        else
-          echo "Error: Input file not found"
-          exit 1
-        fi
+        mkdir -p public
+        curl -L "https://example.com/epg.xml" -o public/epg.xml
 
     - name: Run EPG Filter
-      run: python3 generate_lk.py -i public/epg.xml -o public/lk.xml
+      run: python3 generate_lk.py
 
-    - name: Verify Output
+    - name: Prepare GitHub Pages Content
       run: |
-        if [ -f "public/lk.xml" ]; then
-          echo "Output file created successfully"
-          echo "First 20 lines:"
-          head -n 20 public/lk.xml
-          echo "Total channels found: $(grep -c '<channel' public/lk.xml)"
-        else
-          echo "Error: Output file not created"
-          exit 1
-        fi
+        mkdir -p output
+        cp public/lk.xml output/lk.xml
+        touch output/.nojekyll
 
-    - name: Upload Output
-      uses: actions/upload-artifact@v3
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: sri-lanka-epg
-        path: public/lk.xml
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./output
+        publish_branch: gh-pages
+        force_orphan: true
