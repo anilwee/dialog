@@ -4,84 +4,101 @@ from datetime import datetime
 import os
 import yaml
 
-# Load translation mappings from YAML
 def load_translation_mappings(yaml_file):
     with open(yaml_file, 'r', encoding='utf-8') as file:
         return yaml.safe_load(file) or {}
 
-# Enhanced text translation with context awareness
-def translate_text(text, direct_mappings):
-    # Trim whitespace and check for empty string
+def should_translate(channel_name):
+    # Exact channel names to translate (case sensitive)
+    channels_to_translate = {
+        'Rupavahini', 
+        'Sirasa TV', 
+        'Siyatha TV'
+    }
+    return channel_name in channels_to_translate
+
+def translate_text(text, direct_mappings, channel_name=None):
     text = text.strip()
     if not text:
         return text
     
-    # Check for direct mappings first (case insensitive)
-    text_lower = text.lower()
-    if text_lower in direct_mappings:
-        return direct_mappings[text_lower]
+    # First check direct mappings
+    if text in direct_mappings:
+        return direct_mappings[text]
     
-    # Special handling for XML-specific content we might not want to translate
+    # Skip URLs and special values
     if text.startswith(('http://', 'https://', 'www.', '#')):
         return text
     
-    # Use Google Translate for general translations
-    try:
-        translated = GoogleTranslator(source='en', target='si').translate(text)
-        return translated if translated else text
-    except Exception as e:
-        print(f"Translation failed for '{text}': {str(e)}")
-        return text
+    # Only translate if it's from our target channels
+    if channel_name and should_translate(channel_name):
+        try:
+            translated = GoogleTranslator(source='en', target='si').translate(text)
+            return translated if translated else text
+        except Exception as e:
+            print(f"Translation failed for '{text}': {str(e)}")
+    
+    return text
 
-# Process XML file with improved element handling
 def translate_xml_file(input_path, output_path, direct_mappings):
     try:
-        # Parse with XML declaration preservation
         parser = ET.XMLParser(encoding='utf-8')
         tree = ET.parse(input_path, parser=parser)
         root = tree.getroot()
         
-        # Iterate through all elements
-        for element in root.iter():
-            # Translate element text if it exists and isn't just whitespace
-            if element.text and element.text.strip():
-                element.text = translate_text(element.text, direct_mappings)
+        for channel in root.findall('.//channel'):
+            channel_name = channel.get('name', '')
+            translate_channel = should_translate(channel_name)
             
-            # Translate attribute values
-            for attr in element.attrib:
-                if element.attrib[attr].strip():
-                    element.attrib[attr] = translate_text(element.attrib[attr], direct_mappings)
+            # Translate channel name if in our list
+            if translate_channel and 'name' in channel.attrib:
+                channel.attrib['name'] = translate_text(
+                    channel.attrib['name'], 
+                    direct_mappings
+                )
+            
+            # Translate program elements
+            for program in channel.findall('.//program'):
+                # Translate attributes
+                for attr in program.attrib:
+                    program.attrib[attr] = translate_text(
+                        program.attrib[attr], 
+                        direct_mappings,
+                        channel_name
+                    )
+                
+                # Translate child elements
+                for elem in program:
+                    if elem.text and elem.text.strip():
+                        elem.text = translate_text(
+                            elem.text, 
+                            direct_mappings,
+                            channel_name
+                        )
         
-        # Write with proper XML declaration and UTF-8 encoding
-        tree.write(output_path, encoding='utf-8', xml_declaration=True, short_empty_elements=False)
-        print(f"Successfully translated XML saved to {output_path}")
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        print(f"Successfully created channel-specific translation at {output_path}")
         return True
     except Exception as e:
         print(f"Error processing XML file: {str(e)}")
         return False
 
 def main():
-    # Configuration
     config = {
-        'input_file': 'public/lk.xml',  # Source English XML
-        'output_file': 'public/si.xml', # Target Sinhalese XML
+        'input_file': 'public/lk.xml',
+        'output_file': 'public/si.xml',
         'mappings_file': 'translation_mappings.yml',
         'log_file': 'translation_log.txt'
     }
     
-    # Ensure public directory exists
     os.makedirs(os.path.dirname(config['output_file']), exist_ok=True)
-    
-    # Load direct translation mappings
     direct_mappings = load_translation_mappings(config['mappings_file'])
     
-    # Process the XML file
     success = translate_xml_file(config['input_file'], config['output_file'], direct_mappings)
     
-    # Log completion
     with open(config['log_file'], 'a', encoding='utf-8') as log:
         status = "SUCCESS" if success else "FAILED"
-        log.write(f"{datetime.now().isoformat()} - Translation {status}\n")
+        log.write(f"{datetime.now().isoformat()} - Channel-specific translation {status}\n")
 
 if __name__ == "__main__":
     main()
