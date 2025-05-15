@@ -1,15 +1,27 @@
-# Direct translation mappings (case insensitive)
-# Corrected translations as per request
-"weather": "කාළගුණය"
-"entertainment": "විනෝදාස්වාදය"
-"news": "ප්‍රවෘත්ති"
-"business": "ව්‍යාපාර"
-"technology": "තාක්ෂණය"
-"health": "සෞඛ්‍ය"
-"science": "විද්‍යාව"
-"world": "ලෝකය"
-"sports": "ක්‍රීඩා"
-"paththre wisthare": "පත්තෙරේ විස්තරේ"
+# Channel Name Mappings (exact matches)
+"Rupavahini": "රූපවාහිනී"
+"Sirasa TV": "සිරසා ටීවී"
+"Siyatha TV": "සියත ටීවී"
 
-# Add more direct mappings as needed
-# Format: "english text": "sinhalese translation"
+# Common Program Content Translations
+"News": "ප්‍රවෘත්ති"
+"Weather": "කාළගුණය"
+"Entertainment": "විනෝදාස්වාදය"
+"Business": "ව්‍යාපාර"
+"Technology": "තාක්ෂණය"
+"Health": "සෞඛ්‍ය"
+"Science": "විද්‍යාව"
+"World": "ලෝකය"
+"Sports": "ක්‍රීඩා"
+"Paththre Wisthare": "පත්තෙරේ විස්තරේ"
+"Drama": "නාට්ය"
+"Cinema": "සිනමා"
+"Music": "සංගීත"
+"Documentary": "ලේඛන චිත්‍ර"
+"Talk Show": "සාකච්ඡා වැඩසටහන්"
+"Live": "සජීවී"
+"Breaking News": "හදිසි ප්‍රවෘත්ති"
+"Morning Show": "උදෑසන වැඩසටහන"
+"Evening News": "සවස් ප්‍රවෘත්ති"
+
+# Add more exact-match translations as needed
