@@ -1,48 +1,168 @@
+#!/usr/bin/env python3
+"""
+Sri Lanka EPG Filter - Processes XMLTV files to extract Sri Lankan channels
+"""
+
 import xml.etree.ElementTree as ET
+from defusedxml.ElementTree import parse
+import os
+import re
+import logging
+from datetime import datetime
+import argparse
 
-# Input and output file paths
-INPUT_FILE = "public/epg.xml"
-OUTPUT_FILE = "public/lk.xml"
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('epg_filter.log'),
+        logging.StreamHandler()
+    ]
+)
 
-# List of channels to filter
-FILTERED_CHANNELS = [
-    "ADA DERANA 24", "ART Television", "Buddhist TV", "Channel C", "Channel One",
-    "Citi Hitz", "Damsathara TV", "God TV/Swarga TV", "Haritha TV", "Hi TV",
-    "Hiru TV", "ITN", "Jaya TV", "Monara TV", "Nethra TV", "Pragna TV",
-    "Rangiri Sri Lanka", "Ridee TV", "Rupavahini", "Shakthi TV", "Shraddha TV",
-    "Sirasa TV", "Siyatha TV", "Supreme TV", "Swarnawahini Live", "Swarnawahini",
-    "TV Derana", "TV Didula", "TV1 Sri Lanka", "Vasantham TV, "ThePapare 1""
-]
+class EPGFilter:
+    """Handles filtering of EPG XML data for Sri Lankan channels"""
+    
+    CHANNELS = [
+        # News
+        r"ADA DERANA(?: 24)?", r"Hiru TV", r"Sirasa TV", r"Swarnawahini(?: Live)?",
+        r"TV Derana", r"ITN", r"Rupavahini", r"Jaya TV",
+        
+        # Entertainment
+        r"ART Television", r"Channel C", r"Channel One", r"Hi TV",
+        r"Shakthi TV", r"TV1 Sri Lanka", r"Vasantham TV",
+        
+        # Religious
+        r"Buddhist TV", r"God TV/Swarga TV", r"Shraddha TV",
+        
+        # Sports
+        r"ThePapare \d", r"Citi Hitz",
+        
+        # Regional
+        r"Damsathara TV", r"Haritha TV", r"Monara TV", r"Nethra TV",
+        r"Pragna TV", r"Rangiri Sri Lanka", r"Ridee TV", r"Supreme TV",
+        r"Siyatha TV", r"TV Didula"
+    ]
 
-def parse_and_filter():
-    """
-    Parse the EPG XML file, filter for specific channels, and generate a new XML file.
-    """
-    try:
-        tree = ET.parse(INPUT_FILE)
-        root = tree.getroot()
+    def __init__(self, input_file, output_file):
+        self.input_file = input_file
+        self.output_file = output_file
+        self.namespace = {'ns': 'urn:oasis:names:tc:tv:electronic:programming-guide:1.0'}
+        self.channel_map = {}
+        self.program_count = 0
 
-        filtered_root = ET.Element('tv')
-        channel_id_map = {}
+    def _sanitize_xml(self):
+        """Pre-process XML to fix common issues"""
+        try:
+            with open(self.input_file, 'r', encoding='utf-8', errors='replace') as f:
+                content = f.read()
+            
+            # Fix common XML issues
+            content = re.sub(r'&(?!(amp|lt|gt|quot|apos);)', '&amp;', content)
+            content = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F]', '', content)
+            
+            # Write sanitized temporary file
+            temp_file = f"{self.input_file}.tmp"
+            with open(temp_file, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            return temp_file
+        
+        except Exception as e:
+            logging.error(f"XML sanitization failed: {str(e)}")
+            raise
 
-        for channel in root.findall('channel'):
-            display_name = channel.find('display-name').text
-            if display_name in FILTERED_CHANNELS:
-                filtered_root.append(channel)
-                channel_id_map[channel.attrib['id']] = display_name
+    def _match_channel(self, channel_name):
+        """Fuzzy match channel names with regex patterns"""
+        try:
+            if not channel_name:
+                return False
+            return any(re.search(pattern, channel_name, re.IGNORECASE) 
+                      for pattern in self.CHANNELS)
+        except Exception as e:
+            logging.warning(f"Channel matching error: {str(e)}")
+            return False
 
-        for programme in root.findall('programme'):
-            if programme.attrib['channel'] in channel_id_map:
-                filtered_root.append(programme)
+    def process(self):
+        """Main processing method"""
+        temp_file = None
+        try:
+            # Pre-process XML
+            temp_file = self._sanitize_xml()
+            
+            # Parse XML with security protections
+            tree = parse(temp_file)
+            root = tree.getroot()
+            
+            # Prepare new XML structure
+            ET.register_namespace('', self.namespace['ns'])
+            new_root = ET.Element('tv', self.namespace)
+            
+            # Process channels
+            for channel in root.findall('ns:channel', self.namespace):
+                name_elem = channel.find('ns:display-name', self.namespace)
+                if name_elem is not None and self._match_channel(name_elem.text):
+                    new_root.append(channel)
+                    self.channel_map[channel.attrib['id']] = name_elem.text
+                    logging.info(f"Added channel: {name_elem.text}")
+            
+            # Process programs
+            for program in root.findall('ns:programme', self.namespace):
+                if program.attrib['channel'] in self.channel_map:
+                    new_root.append(program)
+                    self.program_count += 1
+            
+            # Write output
+            tree = ET.ElementTree(new_root)
+            tree.write(
+                self.output_file,
+                encoding='utf-8',
+                xml_declaration=True,
+                short_empty_elements=False
+            )
+            
+            logging.info(
+                f"Successfully created {self.output_file}\n"
+                f"Channels: {len(self.channel_map)}\n"
+                f"Programs: {self.program_count}"
+            )
+            return True
+            
+        except ET.ParseError as e:
+            logging.error(f"XML parsing error: {str(e)}")
+            return False
+        except Exception as e:
+            logging.error(f"Unexpected error: {str(e)}", exc_info=True)
+            return False
+        finally:
+            # Clean up temporary file
+            if temp_file and os.path.exists(temp_file):
+                os.remove(temp_file)
 
-        filtered_tree = ET.ElementTree(filtered_root)
-        filtered_tree.write(OUTPUT_FILE, encoding='utf-8', xml_declaration=True)
-        print(f"Filtered LK file created: {OUTPUT_FILE}")
-
-    except FileNotFoundError:
-        print(f"Error: The file {INPUT_FILE} was not found.")
-    except ET.ParseError as e:
-        print(f"Error parsing XML file: {e}")
+def main():
+    parser = argparse.ArgumentParser(
+        description='Filter Sri Lankan channels from XMLTV EPG data'
+    )
+    parser.add_argument(
+        '-i', '--input', 
+        default='public/epg.xml',
+        help='Input EPG XML file path'
+    )
+    parser.add_argument(
+        '-o', '--output',
+        default='public/lk.xml',
+        help='Output filtered XML file path'
+    )
+    args = parser.parse_args()
+    
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    
+    # Run the filter
+    epg_filter = EPGFilter(args.input, args.output)
+    if not epg_filter.process():
+        exit(1)
 
 if __name__ == "__main__":
-    parse_and_filter()
+    main()
