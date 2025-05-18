@@ -2,7 +2,7 @@ name: Generate LK EPG
 
 on:
   schedule:
-    - cron: '00 12 * * *'  # 1AM NZT is 12PM UTC (NZDT = UTC+13)
+    - cron: '00 12 * * *'  # 1 AM NZT (UTC+12 or +13)
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install --upgrade pip
+        run: pip install lxml
 
       - name: Run generate_lk.py
         run: python generate_lk.py
