@@ -93,3 +93,32 @@
 2025-05-19T13:46:52.782220 - Successfully wrote output to public/si.xml
 2025-05-19T13:46:52.782261 - Output file verification: SUCCESS
 2025-05-19T13:46:52.784145 - Process completed: SUCCESS
+2025-05-20T06:59:28.358912 - Starting translation process
+2025-05-20T06:59:28.358956 - Config: {'input_file': 'public/lk.xml', 'output_file': 'public/si.xml', 'mappings_file': 'translation_mappings.yml', 'debug_log': 'translation_debug.log'}
+2025-05-20T06:59:28.358993 - Loaded mappings from translation_mappings.yml
+2025-05-20T06:59:28.361093 - Loaded 22 direct mappings
+2025-05-20T06:59:28.361124 - Starting translation: public/lk.xml → public/si.xml
+2025-05-20T06:59:28.388997 - Found 20 channels in XML
+2025-05-20T06:59:28.389332 - Checking channel: 
+2025-05-20T06:59:28.389355 - Checking channel: 
+2025-05-20T06:59:28.389374 - Checking channel: 
+2025-05-20T06:59:28.389391 - Checking channel: 
+2025-05-20T06:59:28.389407 - Checking channel: 
+2025-05-20T06:59:28.389423 - Checking channel: 
+2025-05-20T06:59:28.389440 - Checking channel: 
+2025-05-20T06:59:28.389461 - Checking channel: 
+2025-05-20T06:59:28.389479 - Checking channel: 
+2025-05-20T06:59:28.389495 - Checking channel: 
+2025-05-20T06:59:28.389511 - Checking channel: 
+2025-05-20T06:59:28.389526 - Checking channel: 
+2025-05-20T06:59:28.389541 - Checking channel: 
+2025-05-20T06:59:28.389556 - Checking channel: 
+2025-05-20T06:59:28.389572 - Checking channel: 
+2025-05-20T06:59:28.389588 - Checking channel: 
+2025-05-20T06:59:28.389603 - Checking channel: 
+2025-05-20T06:59:28.389619 - Checking channel: 
+2025-05-20T06:59:28.389634 - Checking channel: 
+2025-05-20T06:59:28.389650 - Checking channel: 
+2025-05-20T06:59:28.434785 - Successfully wrote output to public/si.xml
+2025-05-20T06:59:28.434844 - Output file verification: SUCCESS
+2025-05-20T06:59:28.436519 - Process completed: SUCCESS
