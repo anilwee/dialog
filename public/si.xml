@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<tv><channel id="Rupavahini">
+<tv><channel id="Rupavahini" name="රූපවාහිනී">
         <display-name lang="si">Rupavahini</display-name>
         <icon src="https://api2.viu.lk/api/client/v1/global/images/25661?accessKey=WkVjNWNscFhORDBLCg==" />
     </channel>
@@ -19,7 +19,7 @@
         <display-name lang="si">TV Derana</display-name>
         <icon src="https://api2.viu.lk/api/client/v1/global/images/25665?accessKey=WkVjNWNscFhORDBLCg==" />
     </channel>
-<channel id="Sirasa TV">
+<channel id="Sirasa TV" name="සිරසා ටීවී">
         <display-name lang="si">Sirasa TV</display-name>
         <icon src="https://api2.viu.lk/api/client/v1/global/images/25667?accessKey=WkVjNWNscFhORDBLCg==" />
     </channel>
@@ -43,7 +43,7 @@
         <display-name lang="si">ADA DERANA 24</display-name>
         <icon src="https://api2.viu.lk/api/client/v1/global/images/25673?accessKey=WkVjNWNscFhORDBLCg==" />
     </channel>
-<channel id="Siyatha TV">
+<channel id="Siyatha TV" name="සියත ටීවී">
         <display-name lang="si">Siyatha TV</display-name>
         <icon src="https://api2.viu.lk/api/client/v1/global/images/25674?accessKey=WkVjNWNscFhORDBLCg==" />
     </channel>

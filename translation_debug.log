@@ -238,3 +238,12 @@
 2025-05-23T13:43:59.289019 - Successfully wrote output to public/si.xml
 2025-05-23T13:43:59.289058 - Output file verification: SUCCESS
 2025-05-23T13:43:59.290924 - Process completed: SUCCESS
+2025-05-23T21:45:35.150852 - Starting translation process
+2025-05-23T21:45:35.153090 - Loaded 22 translations from translation_mappings.yml
+2025-05-23T21:45:35.153128 - Processing public/lk.xml → public/si.xml
+2025-05-23T21:45:35.175679 - Processing channel ID: Rupavahini
+2025-05-23T21:45:35.175735 - Processing channel ID: Sirasa TV
+2025-05-23T21:45:35.175763 - Processing channel ID: Siyatha TV
+2025-05-23T21:45:35.175789 - Translated 3 channels and 0 programs
+2025-05-23T21:45:35.222016 - Successfully wrote to public/si.xml
+2025-05-23T21:45:35.223835 - Process completed successfully
