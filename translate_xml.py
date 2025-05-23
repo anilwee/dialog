@@ -18,6 +18,11 @@ def load_translations(yaml_file):
         debug_log(f"YAML load error: {str(e)}")
         return {}
 
+def translate_content(text, translations):
+    if not text or not text.strip():
+        return text
+    return translations.get(text, text)
+
 def process_xml(input_path, output_path, translations):
     try:
         debug_log(f"Starting processing {input_path}")
@@ -27,6 +32,7 @@ def process_xml(input_path, output_path, translations):
         
         target_channels = ["Rupavahini", "Sirasa TV", "Siyatha TV"]
         processed_channels = 0
+        translated_programs = 0
         
         for channel in root.findall('.//channel'):
             channel_id = channel.get('id', '')
@@ -35,21 +41,32 @@ def process_xml(input_path, output_path, translations):
                 debug_log(f"Processing channel: {channel_id}")
                 processed_channels += 1
                 
-                # Update display-name for Sinhala
+                # Update Sinhala display name
                 for display_name in channel.findall('display-name'):
                     if display_name.get('lang') == 'si':
                         display_name.text = translations.get(channel_id, channel_id)
-                        debug_log(f"Updated Sinhala display-name to {display_name.text}")
+                        debug_log(f"Updated display-name to {display_name.text}")
                 
-                # Translate program elements
+                # Translate all program elements
                 for program in channel.findall('.//program'):
-                    for elem in program:
-                        if elem.text and elem.text.strip():
-                            if elem.text in translations:
-                                elem.text = translations[elem.text]
-                                debug_log(f"Translated {elem.tag} to {elem.text}")
+                    translated_programs += 1
+                    
+                    # Translate program title
+                    title = program.find('title')
+                    if title is not None and title.text:
+                        title.text = translate_content(title.text, translations)
+                    
+                    # Translate program description
+                    desc = program.find('desc')
+                    if desc is not None and desc.text:
+                        desc.text = translate_content(desc.text, translations)
+                    
+                    # Translate program category
+                    category = program.find('category')
+                    if category is not None and category.text:
+                        category.text = translate_content(category.text, translations)
         
-        debug_log(f"Processed {processed_channels} channels")
+        debug_log(f"Processed {processed_channels} channels and {translated_programs} programs")
         
         # Write output file
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
