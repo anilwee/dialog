@@ -258,3 +258,14 @@
 2025-05-23T21:49:39.265253 - Processed 3 channels
 2025-05-23T21:49:39.309429 - Successfully wrote public/si.xml
 2025-05-23T21:49:39.310971 - Process succeeded
+2025-05-24T13:40:15.880885 - Loaded 22 translations
+2025-05-24T13:40:15.880920 - Starting processing public/lk.xml
+2025-05-24T13:40:15.903318 - Processing channel: Rupavahini
+2025-05-24T13:40:15.903354 - Updated display-name to රූපවාහිනී
+2025-05-24T13:40:15.903395 - Processing channel: Sirasa TV
+2025-05-24T13:40:15.903417 - Updated display-name to සිරසා ටීවී
+2025-05-24T13:40:15.903442 - Processing channel: Siyatha TV
+2025-05-24T13:40:15.903460 - Updated display-name to සියත ටීවී
+2025-05-24T13:40:15.903485 - Processed 3 channels and 0 programs
+2025-05-24T13:40:15.947288 - Successfully wrote public/si.xml
+2025-05-24T13:40:15.948946 - Process succeeded
