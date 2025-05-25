@@ -1,20 +1,28 @@
 # Channel Name Translations (must match exactly)
 "Rupavahini": "රූපවාහිනී"
-"Sirasa TV": "සිරසා ටීවී"
+"Sirasa TV": "සිරස ටීවී"
 "Siyatha TV": "සියත ටීවී"
 
 # News and Information Programs
 "News": "ප්‍රවෘත්ති"
+"Main News": "ප්‍රධාන ප්‍රවෘත්ති"
 "News - Live": "සජීවී ප්‍රවෘත්ති"
+"News And Weather Report - Live": "ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී"
 "Breaking News": "හදිසි ප්‍රවෘත්ති"
 "News Bulletin": "ප්‍රවෘත්ති විකාශනය"
 "Morning News": "උදෑසන ප්‍රවෘත්ති"
+"Lunch time News": "දහවල් ප්‍රවෘත්ති"
 "Evening News": "සවස් ප්‍රවෘත්ති"
 "Nightly News": "රාත්‍රී ප්‍රවෘත්ති"
 "Daily News": "දිනපතා ප්‍රවෘත්ති"
 "Current Affairs": "වත්මන් සිදුවීම්"
+"Ethera Methera": "එතෙර මෙතෙර"
+"Business In Brief": "ව්‍යාපාරික තොරතුරු සැකෙවින්"
 "Weather": "කාළගුණය"
 "Weather Report": "කාලගුණ විශේෂාංග"
+"Sunday Ayubowan - Live": "ඉරිදා ආයුබෝවන් - සජිවී"
+"Paththara Sirasthala - Live": "පත්තර සිරස්තල - සජිවී"
+"Govibimata Arunalu": "ගොවිබිමට අරුණලු"
 
 # Entertainment Programs
 "Entertainment": "විනෝදාස්වාදය"
@@ -25,9 +33,10 @@
 "Music": "සංගීත"
 "Reality Show": "රියැලිටි වැඩසටහන"
 "Talk Show": "සාකච්ඡා වැඩසටහන"
-"Comedy": "කොමඩි"
+"Comedy": "විනෝදාත්මක වැඩසටහන"
 "Game Show": "ක්‍රීඩා වැඩසටහන"
 "Talent Show": "තරු අභියෝගය"
+"Musical Program": "සංගීත වැඩසටහන"
 
 # Educational and Cultural
 "Educational": "අධ්‍යාපනික"
@@ -41,6 +50,7 @@
 
 # Sports Programs
 "Sports": "ක්‍රීඩා"
+"Kreeda Visithuru - Live": "ක්‍රීඩා විසිතුරු - සජීවී"
 "Cricket": "ක්‍රිකට්"
 "Football": "පාපන්දු"
 "Rugby": "රගර්"
@@ -59,12 +69,17 @@
 "Afternoon Show": "දහවල් වැඩසටහන"
 "Evening Show": "සවස් වැඩසටහන"
 "Late Night": "රාත්‍රී වැඩසටහන"
+"Ayubowewa": "ආයූබෝවේවා"
+"Sivudesa": "සිව්දෙස"
 
 # Special Broadcasts
 "Live": "සජීවී"
 "Special": "විශේෂ"
 "Annual": "වාර්ෂික"
 "Festival": "පෙරහැර"
+"Samma Ditti": "සම්මා දිට්ටී"
+"Manudham Prarthana": "මනුදම් ප්‍රාර්ථානා"
+"Shanidha Ayubowan - Live": "ශනිදා ආයුබෝවන් - සජීවී"
 
 # Common Descriptors
 "Update": "යාවත්කාලීන කිරීම"
@@ -75,3 +90,4 @@
 "Premiere": "ප්‍රථම ප්‍රදර්ශනය"
 "Finale": "අවසාන කථාංගය"
 "Repeat": "පුනරාවර්තනය"
+"Program": "වැඩසටහන"
