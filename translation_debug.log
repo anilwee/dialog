@@ -339,3 +339,283 @@
 2025-05-25T06:14:48.059856 - Processed 3 channels and 454 programmes
 2025-05-25T06:14:48.104738 - Successfully wrote public/si.xml
 2025-05-25T06:14:48.106335 - Process succeeded
+2025-05-25T09:22:21.424416 - Loaded 92 translations
+2025-05-25T09:22:21.424454 - Starting processing public/lk.xml
+2025-05-25T09:22:21.446987 - Updated Rupavahini display-name to රූපවාහිනී
+2025-05-25T09:22:21.447021 - Updated Sirasa TV display-name to සිරස ටීවී
+2025-05-25T09:22:21.447044 - Updated Siyatha TV display-name to සියත ටීවී
+2025-05-25T09:22:21.447672 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.447705 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.447769 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447793 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447857 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447879 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447901 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.447923 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.447945 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447966 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.447988 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448009 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448070 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448115 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448197 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448219 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448334 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.448362 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.448491 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.448526 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.448612 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.448634 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.448692 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448714 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448772 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448793 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448813 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448834 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448855 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448876 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448896 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448917 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.448975 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.448996 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449106 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449132 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449209 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.449230 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.449348 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.449377 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.449406 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.449435 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.449510 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.449531 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.449589 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449609 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449669 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449697 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449718 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.449739 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.449760 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449780 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449800 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.449821 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.449880 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449907 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449967 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.449988 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.450098 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.450126 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.450235 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.450266 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.450295 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.450332 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.450419 - Translated title: Sivudesa → සිව්දෙස
+2025-05-25T09:22:21.450460 - Translated desc: Sivudesa → සිව්දෙස
+2025-05-25T09:22:21.450736 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.450791 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.451064 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.451126 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.451241 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.451274 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.451336 - Translated title: Samma Ditti → සම්මා දිට්ටී
+2025-05-25T09:22:21.451358 - Translated desc: Samma Ditti → සම්මා දිට්ටී
+2025-05-25T09:22:21.451380 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.451400 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-05-25T09:22:21.451462 - Translated title: Sunday Ayubowan - Live → ඉරිදා ආයුබෝවන් - සජිවී
+2025-05-25T09:22:21.451484 - Translated desc: Sunday Ayubowan - Live → ඉරිදා ආයුබෝවන් - සජිවී
+2025-05-25T09:22:21.451563 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.451584 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-05-25T09:22:21.451643 - Translated title: Ayubowewa → ආයූබෝවේවා
+2025-05-25T09:22:21.451672 - Translated desc: Ayubowewa → ආයූබෝවේවා
+2025-05-25T09:22:21.451693 - Translated title: Kreeda Visithuru - Live → ක්‍රීඩා විසිතුරු - සජීවී
+2025-05-25T09:22:21.451713 - Translated desc: Kreeda Visithuru - Live → ක්‍රීඩා විසිතුරු - සජීවී
+2025-05-25T09:22:21.451753 - Translated title: Business In Brief → ව්‍යාපාරික තොරතුරු සැකෙවින්
+2025-05-25T09:22:21.451774 - Translated desc: Business In Brief → ව්‍යාපාරික තොරතුරු සැකෙවින්
+2025-05-25T09:22:21.451831 - Translated title: Govibimata Arunalu → ගොවිබිමට අරුණලු
+2025-05-25T09:22:21.451859 - Translated desc: Govibimata Arunalu → ගොවිබිමට අරුණලු
+2025-05-25T09:22:21.451934 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.451962 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-05-25T09:22:21.452039 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452060 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452105 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452134 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452156 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452177 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452198 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452218 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452238 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452258 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452279 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452299 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452326 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452347 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452367 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452387 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452407 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452427 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452447 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452466 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452486 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452506 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452526 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452545 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452565 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452584 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452605 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452624 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452645 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452664 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452685 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452704 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452724 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452744 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452764 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452783 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452803 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452823 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452843 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452863 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452883 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452903 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452923 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452942 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.452967 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.452987 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453007 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453033 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453055 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453096 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453127 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453148 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453169 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453214 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453256 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453297 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453328 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453364 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453406 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.453459 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.453660 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.453703 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.453959 - Translated title: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.453999 - Translated desc: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.454243 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.454274 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.454390 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.454414 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.454462 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.454492 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.454533 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.454554 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.454703 - Translated title: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.454726 - Translated desc: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.454924 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.454946 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455060 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455110 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455173 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.455204 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.455246 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.455267 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.455415 - Translated title: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.455438 - Translated desc: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.455635 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455659 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455795 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455819 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.455841 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.455861 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.455891 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.455919 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.455968 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.455990 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.456049 - Translated title: Kids 1st → කිඩ්ස් 1st
+2025-05-25T09:22:21.456069 - Translated desc: Kids 1st → කිඩ්ස් 1st
+2025-05-25T09:22:21.456122 - Translated title: Kids Movie → ළමා චිත්‍රපට
+2025-05-25T09:22:21.456144 - Translated desc: Kids Movie → ළමා චිත්‍රපට
+2025-05-25T09:22:21.456203 - Translated title: Kadalla → කැදැල්ල
+2025-05-25T09:22:21.456225 - Translated desc: Kadalla → කැදැල්ල
+2025-05-25T09:22:21.456266 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.456286 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.456325 - Translated title: Tharu Samaga Tharu → තරු සමග තරු
+2025-05-25T09:22:21.456346 - Translated desc: Tharu Samaga Tharu → තරු සමග තරු
+2025-05-25T09:22:21.456387 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456409 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456466 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456488 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456533 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.456561 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.456602 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.456622 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.456679 - Translated title: Kids Movie → ළමා චිත්‍රපට
+2025-05-25T09:22:21.456699 - Translated desc: Kids Movie → ළමා චිත්‍රපට
+2025-05-25T09:22:21.456773 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.456794 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.456851 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456873 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456930 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456951 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.456971 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.456991 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.457019 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.457046 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.457123 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.457152 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-05-25T09:22:21.457301 - Translated title: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.457325 - Translated desc: Lunch Time News → දහවල් ප්‍රවෘත්ති
+2025-05-25T09:22:21.457523 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.457546 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.457666 - Translated title: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.457688 - Translated desc: News 1St → නිවුස් 1st
+2025-05-25T09:22:21.457734 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.457763 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-05-25T09:22:21.457968 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.457998 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.458152 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.458181 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.458459 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.458482 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.458593 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.458615 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.458882 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.458903 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.459014 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459035 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459320 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.459346 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.459388 - Translated title: Sonduru Piyasa → සොදුරු පියස
+2025-05-25T09:22:21.459410 - Translated desc: Sonduru Piyasa → සොදුරු පියස
+2025-05-25T09:22:21.459450 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459471 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459529 - Translated title: Soba → සෝබා
+2025-05-25T09:22:21.459550 - Translated desc: Soba → සෝබා
+2025-05-25T09:22:21.459571 - Translated title: Drama → නාට්ය
+2025-05-25T09:22:21.459591 - Translated desc: Drama → නාට්ය
+2025-05-25T09:22:21.459650 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.459671 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.459763 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.459784 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.459861 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459882 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.459956 - Translated title: Drama → නාට්ය
+2025-05-25T09:22:21.459976 - Translated desc: Drama → නාට්ය
+2025-05-25T09:22:21.460034 - Translated title: Movie → චිත්‍රපට
+2025-05-25T09:22:21.460054 - Translated desc: Movie → චිත්‍රපට
+2025-05-25T09:22:21.460164 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.460191 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-05-25T09:22:21.460302 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.460323 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-05-25T09:22:21.460556 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460577 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.460598 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460626 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.460646 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460666 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.460686 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460706 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.460726 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460746 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.460766 - Translated title: Program → වැඩසටහන
+2025-05-25T09:22:21.460786 - Translated desc: Program → වැඩසටහන
+2025-05-25T09:22:21.461005 - Processed 3 channels and 454 programmes
+2025-05-25T09:22:21.505372 - Successfully wrote public/si.xml
+2025-05-25T09:22:21.506915 - Process succeeded
