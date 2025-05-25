@@ -21,7 +21,15 @@ def load_translations(yaml_file):
 def translate_content(text, translations):
     if not text or not text.strip():
         return text
-    return translations.get(text, text)
+    # Try exact match first
+    if text in translations:
+        return translations[text]
+    # Try case-insensitive match
+    text_lower = text.lower()
+    for key, value in translations.items():
+        if key.lower() == text_lower:
+            return value
+    return text
 
 def process_xml(input_path, output_path, translations):
     try:
@@ -31,42 +39,42 @@ def process_xml(input_path, output_path, translations):
         root = tree.getroot()
         
         target_channels = ["Rupavahini", "Sirasa TV", "Siyatha TV"]
-        processed_channels = 0
+        processed_channels = set()
         translated_programs = 0
         
+        # First pass: Update channel display names
         for channel in root.findall('.//channel'):
             channel_id = channel.get('id', '')
-            
             if channel_id in target_channels:
-                debug_log(f"Processing channel: {channel_id}")
-                processed_channels += 1
-                
-                # Update Sinhala display name
                 for display_name in channel.findall('display-name'):
                     if display_name.get('lang') == 'si':
                         display_name.text = translations.get(channel_id, channel_id)
-                        debug_log(f"Updated display-name to {display_name.text}")
-                
-                # Translate all program elements
-                for program in channel.findall('.//program'):
-                    translated_programs += 1
-                    
-                    # Translate program title
-                    title = program.find('title')
-                    if title is not None and title.text:
-                        title.text = translate_content(title.text, translations)
-                    
-                    # Translate program description
-                    desc = program.find('desc')
-                    if desc is not None and desc.text:
-                        desc.text = translate_content(desc.text, translations)
-                    
-                    # Translate program category
-                    category = program.find('category')
-                    if category is not None and category.text:
-                        category.text = translate_content(category.text, translations)
+                        debug_log(f"Updated {channel_id} display-name to {display_name.text}")
+                        processed_channels.add(channel_id)
         
-        debug_log(f"Processed {processed_channels} channels and {translated_programs} programs")
+        # Second pass: Translate programs
+        for programme in root.findall('.//programme'):
+            channel_id = programme.get('channel', '')
+            if channel_id in processed_channels:
+                translated_programs += 1
+                
+                # Translate title
+                title = programme.find('title[@lang="si"]')
+                if title is not None and title.text:
+                    original = title.text
+                    title.text = translate_content(original, translations)
+                    if title.text != original:
+                        debug_log(f"Translated title: {original} → {title.text}")
+                
+                # Translate description
+                desc = programme.find('desc[@lang="si"]')
+                if desc is not None and desc.text:
+                    original = desc.text
+                    desc.text = translate_content(original, translations)
+                    if desc.text != original:
+                        debug_log(f"Translated desc: {original} → {desc.text}")
+        
+        debug_log(f"Processed {len(processed_channels)} channels and {translated_programs} programmes")
         
         # Write output file
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
