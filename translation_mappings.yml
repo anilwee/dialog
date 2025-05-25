@@ -1,27 +1,77 @@
-# Channel IDs (must match exactly)
+# Channel Name Translations (must match exactly)
 "Rupavahini": "රූපවාහිනී"
 "Sirasa TV": "සිරසා ටීවී"
 "Siyatha TV": "සියත ටීවී"
 
-# Common Program Content Translations
+# News and Information Programs
 "News": "ප්‍රවෘත්ති"
-"Weather": "කාළගුණය"
-"Entertainment": "විනෝදාස්වාදය"
-"Business": "ව්‍යාපාර"
-"Technology": "තාක්ෂණය"
-"Health": "සෞඛ්‍ය"
-"Science": "විද්‍යාව"
-"World": "ලෝකය"
-"Sports": "ක්‍රීඩා"
-"Paththre Wisthare": "පත්තෙරේ විස්තරේ"
-"Drama": "නාට්ය"
-"Cinema": "සිනමා"
-"Music": "සංගීත"
-"Documentary": "ලේඛන චිත්‍ර"
-"Talk Show": "සාකච්ඡා වැඩසටහන්"
-"Live": "සජීවී"
+"News - Live": "සජීවී ප්‍රවෘත්ති"
 "Breaking News": "හදිසි ප්‍රවෘත්ති"
-"Morning Show": "උදෑසන වැඩසටහන"
+"News Bulletin": "ප්‍රවෘත්ති විකාශනය"
+"Morning News": "උදෑසන ප්‍රවෘත්ති"
 "Evening News": "සවස් ප්‍රවෘත්ති"
+"Nightly News": "රාත්‍රී ප්‍රවෘත්ති"
+"Daily News": "දිනපතා ප්‍රවෘත්ති"
+"Current Affairs": "වත්මන් සිදුවීම්"
+"Weather": "කාළගුණය"
+"Weather Report": "කාලගුණ විශේෂාංග"
 
-# Add more exact-match translations as needed
+# Entertainment Programs
+"Entertainment": "විනෝදාස්වාදය"
+"Drama": "නාට්ය"
+"Tele Drama": "තිර නාට්ය"
+"Movie": "චිත්‍රපට"
+"Movies": "සිනමා"
+"Music": "සංගීත"
+"Reality Show": "රියැලිටි වැඩසටහන"
+"Talk Show": "සාකච්ඡා වැඩසටහන"
+"Comedy": "කොමඩි"
+"Game Show": "ක්‍රීඩා වැඩසටහන"
+"Talent Show": "තරු අභියෝගය"
+
+# Educational and Cultural
+"Educational": "අධ්‍යාපනික"
+"Documentary": "ලේඛන චිත්‍ර"
+"Cultural": "සංස්කෘතික"
+"Religious": "ආගමික"
+"Buddhist": "බෞද්ධ"
+"Hindu": "හින්දු"
+"Islamic": "ඉස්ලාමීය"
+"Christian": "ක්‍රිස්තියානි"
+
+# Sports Programs
+"Sports": "ක්‍රීඩා"
+"Cricket": "ක්‍රිකට්"
+"Football": "පාපන්දු"
+"Rugby": "රගර්"
+"Tennis": "ටෙනිස්"
+"Athletics": "ඇතලටික්ස්"
+"Highlights": "සාරාංශ"
+
+# Children's Programs
+"Children": "ළමා"
+"Kids": "තරුණ"
+"Cartoon": "කාටූන්"
+"Animation": "ඇනිමේෂන්"
+
+# Time-Based Programs
+"Morning Show": "උදෑසන වැඩසටහන"
+"Afternoon Show": "දහවල් වැඩසටහන"
+"Evening Show": "සවස් වැඩසටහන"
+"Late Night": "රාත්‍රී වැඩසටහන"
+
+# Special Broadcasts
+"Live": "සජීවී"
+"Special": "විශේෂ"
+"Annual": "වාර්ෂික"
+"Festival": "පෙරහැර"
+
+# Common Descriptors
+"Update": "යාවත්කාලීන කිරීම"
+"Review": "සමාලෝචනය"
+"Analysis": "විශ්ලේෂණය"
+"Interview": "ජයග්‍රහණ"
+"Discussion": "සංවාදය"
+"Premiere": "ප්‍රථම ප්‍රදර්ශනය"
+"Finale": "අවසාන කථාංගය"
+"Repeat": "පුනරාවර්තනය"
