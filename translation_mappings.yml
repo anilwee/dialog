@@ -5,8 +5,13 @@
 
 # News and Information Programs
 "News": "ප්‍රවෘත්ති"
+"News @ 7": "ප්‍රවෘත්ති @ 7"
+"News @ 06.0 0AM": "ප්‍රවෘත්ති @ 06.00AM"
+"News @ 12 Noon Live": "ප්‍රවෘත්ති @ පස්වරු 12 සජීවී"
+"News 1st": "නිවුස් 1st"
 "Main News": "ප්‍රධාන ප්‍රවෘත්ති"
 "News - Live": "සජීවී ප්‍රවෘත්ති"
+"Prime Time News - Live": "ප්‍රධාන ප්‍රවෘත්ති - සජීවී"
 "News And Weather Report - Live": "ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී"
 "Breaking News": "හදිසි ප්‍රවෘත්ති"
 "News Bulletin": "ප්‍රවෘත්ති විකාශනය"
@@ -14,6 +19,7 @@
 "Lunch time News": "දහවල් ප්‍රවෘත්ති"
 "Evening News": "සවස් ප්‍රවෘත්ති"
 "Nightly News": "රාත්‍රී ප්‍රවෘත්ති"
+"Midnight News": "මැදියම් රාත්‍රී ප්‍රවෘත්ති"
 "Daily News": "දිනපතා ප්‍රවෘත්ති"
 "Current Affairs": "වත්මන් සිදුවීම්"
 "Ethera Methera": "එතෙර මෙතෙර"
@@ -27,8 +33,10 @@
 # Entertainment Programs
 "Entertainment": "විනෝදාස්වාදය"
 "Drama": "නාට්ය"
+"Kids 1st": "කිඩ්ස් 1st"
 "Tele Drama": "තිර නාට්ය"
 "Movie": "චිත්‍රපට"
+"Kids Movie": "ළමා චිත්‍රපට"
 "Movies": "සිනමා"
 "Music": "සංගීත"
 "Reality Show": "රියැලිටි වැඩසටහන"
@@ -37,6 +45,11 @@
 "Game Show": "ක්‍රීඩා වැඩසටහන"
 "Talent Show": "තරු අභියෝගය"
 "Musical Program": "සංගීත වැඩසටහන"
+"Kadalla": "කැදැල්ල"
+"Surapappa": "සූරපප්පා"
+"Siyatha Movie festival": "සියත මූවී ෆෙස්ටිවල්"
+"Soba": "සෝබා"
+"Tharu Samaga Tharu": "තරු සමග තරු"
 
 # Educational and Cultural
 "Educational": "අධ්‍යාපනික"
@@ -71,6 +84,8 @@
 "Late Night": "රාත්‍රී වැඩසටහන"
 "Ayubowewa": "ආයූබෝවේවා"
 "Sivudesa": "සිව්දෙස"
+"Sonduru Piyasa": "සොදුරු පියස"
+"Siyatha Paththare Live": "සියත පත්තරේ සජීවී"
 
 # Special Broadcasts
 "Live": "සජීවී"
@@ -91,3 +106,4 @@
 "Finale": "අවසාන කථාංගය"
 "Repeat": "පුනරාවර්තනය"
 "Program": "වැඩසටහන"
+"End of Transmission": "වැඩසටහන් නිමාව"
