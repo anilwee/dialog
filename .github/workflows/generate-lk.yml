@@ -1,34 +1,49 @@
-name: Generate LK EPG
+name: Generate Sri Lanka EPG
 
 on:
   schedule:
-    - cron: '00 12 * * *'  # 1 AM NZT (UTC+12 or +13)
+    - cron: "30 0 * * *"
   workflow_dispatch:
 
 jobs:
-  generate_lk_epg:
+  generate-lk-epg:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
 
-      - name: Install dependencies
-        run: pip install lxml
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml2-utils xmlstarlet
+        pip install defusedxml requests
 
-      - name: Run generate_lk.py
-        run: python generate_lk.py
+    - name: Create directories
+      run: mkdir -p public
 
-      - name: Commit and push updated lk.xml
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git add public/lk.xml
-          git commit -m "Update lk.xml (EPG filter)" || echo "No changes to commit"
-          git pull --rebase origin main
-          git push
+    - name: Run EPG Filter
+      run: python3 generate_lk.py
+
+    - name: Verify Output
+      run: |
+        if [ -f "public/lk.xml" ]; then
+          echo "EPG generated successfully"
+          echo "Channels found: $(grep -c '<channel' public/lk.xml)"
+          echo "Programs found: $(grep -c '<programme' public/lk.xml)"
+        else
+          echo "Error: Failed to generate EPG"
+          exit 1
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: sri-lanka-epg
+        path: public/lk.xml
