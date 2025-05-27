@@ -2,7 +2,7 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    - cron: "30 0 * * *" # Runs at 12:30 PM AKL (12:30 AM UTC)
+    - cron: '00 11 * * *'  # 1 AM NZT (UTC+12 or +13)
   workflow_dispatch: # Allows manual triggering
 
 jobs:
