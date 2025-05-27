@@ -2056,3 +2056,7 @@
 2025-05-27T22:57:32.498959 - Processed 0 channels and 0 programmes
 2025-05-27T22:57:32.499129 - Successfully wrote public/si.xml
 2025-05-27T22:57:32.499151 - Process succeeded
+2025-05-27T23:04:39.346440 - Loaded 118 translations
+2025-05-27T23:04:39.346488 - Starting processing public/lk.xml
+2025-05-27T23:04:39.346541 - XML processing error: [Errno 2] No such file or directory: 'public/lk.xml'
+2025-05-27T23:04:39.346563 - Process failed
