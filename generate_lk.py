@@ -1,45 +1,37 @@
-from lxml import etree
 import os
+from lxml import etree
 
-INPUT_FILE = 'public/epg.xml'
-OUTPUT_FILE = 'public/lk.xml'
+# Replace with your source XML or data generation logic
+SOURCE_XML_PATH = 'source.xml'
+OUTPUT_XML_PATH = 'public/lk.xml'
 
-LK_CHANNELS = {
-    "Rupavahini", "ITN", "Sirasa TV", "Siyatha TV", "Swarnavahini", "Hiru TV", "TV Derana",
-    "TV Supreme", "Ridee TV", "Citi Hitz", "Channel Eye", "Nethra TV", "ART TV", "TV1 Sri Lanka",
-    "Shakthi TV", "Vasantham TV", "ADA DERANA 24", "Rangiri Sri Lanka", "Buddhist TV",
-    "Shraddha TV", "The Papare", "Monara TV", "TV Didula", "Hi TV"
-}
+def filter_logic(element):
+    # Example filter: keep only channels with id starting with "LK"
+    # Adjust this filter as needed for your requirements
+    return element.get('id', '').startswith('LK')
 
-def main():
-    if not os.path.exists(INPUT_FILE):
-        print(f"Input file {INPUT_FILE} not found.")
+def generate_filtered_lk():
+    if not os.path.exists(SOURCE_XML_PATH):
+        print(f"Source XML file {SOURCE_XML_PATH} not found.")
         return
 
-    parser = etree.XMLParser(recover=True)
-    tree = etree.parse(INPUT_FILE, parser)
+    tree = etree.parse(SOURCE_XML_PATH)
     root = tree.getroot()
 
-    new_root = etree.Element("tv")
+    # Create new root for filtered XML
+    filtered_root = etree.Element(root.tag, root.attrib)
 
-    # Copy relevant channels
-    valid_channels = set()
-    for channel in root.findall("channel"):
-        display_name = channel.find("display-name")
-        if display_name is not None and display_name.text in LK_CHANNELS:
-            new_root.append(channel)
-            valid_channels.add(channel.get("id"))
-
-    # Copy relevant programmes
-    for programme in root.findall("programme"):
-        if programme.get("channel") in valid_channels:
-            new_root.append(programme)
+    # Copy relevant child elements according to filter
+    for child in root:
+        if filter_logic(child):
+            filtered_root.append(child)
 
     # Save filtered XML
-    with open(OUTPUT_FILE, "wb") as f:
-        f.write(etree.tostring(new_root, pretty_print=True, encoding='UTF-8', xml_declaration=True))
+    os.makedirs(os.path.dirname(OUTPUT_XML_PATH), exist_ok=True)
+    with open(OUTPUT_XML_PATH, 'wb') as f:
+        f.write(etree.tostring(filtered_root, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
 
-    print(f"Filtered EPG written to {OUTPUT_FILE}")
+    print(f"Filtered lk.xml generated at {OUTPUT_XML_PATH}")
 
 if __name__ == "__main__":
-    main()
+    generate_filtered_lk()
