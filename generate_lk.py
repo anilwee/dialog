@@ -2,7 +2,7 @@ import os
 from lxml import etree
 
 # Replace with your source XML or data generation logic
-SOURCE_XML_PATH = 'source.xml'
+SOURCE_XML_PATH = 'public/epg.xml'
 OUTPUT_XML_PATH = 'public/lk.xml'
 
 def filter_logic(element):
