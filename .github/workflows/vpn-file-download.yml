@@ -2,9 +2,8 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    # Runs at 00:05 Auckland time (UTC+12 or UTC+13)
-    - cron: '05 11,12 * * *'  # Triggers at both 11:05 and 12:05 UTC
-  workflow_dispatch: # Allows manual triggering
+    - cron: '05 11,12 * * *'
+  workflow_dispatch:
 
 jobs:
   vpn-download-host:
@@ -14,7 +13,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Important for git history operations
+        fetch-depth: 0
+
+    # Create .gitignore if it doesn't exist
+    - name: Setup .gitignore
+      run: |
+        if [ ! -f .gitignore ]; then
+          echo "config.ovpn" >> .gitignore
+          echo "raw_config.ovpn" >> .gitignore
+          echo "auth.txt" >> .gitignore
+        fi
 
     - name: Decode and Save OVPN Config
       run: |
@@ -40,19 +48,12 @@ jobs:
       run: |
         curl --max-time 10 https://ipinfo.io
 
-    - name: Download XML File
+    - name: Download and Process EPG Files
       run: |
         wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
         gunzip -c epg.xml.gz > epg.xml
-
-    - name: Prepare Public Directory
-      run: |
         mkdir -p public
-        # Force remove existing files if they exist
-        rm -f public/epg.xml* || true
-
-    - name: Move New Files
-      run: |
+        rm -f public/epg.xml*
         mv epg.xml.gz public/
         mv epg.xml public/
 
@@ -60,12 +61,13 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add public/
+        git add .gitignore public/
         git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Clean up VPN connection
+    - name: Clean up
       run: |
         sudo pkill openvpn || true
+        rm -f config.ovpn raw_config.ovpn auth.txt
