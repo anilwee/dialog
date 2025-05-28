@@ -2,7 +2,7 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    - cron: '05 11,12 * * *'
+    - cron: '05 11,12 * * *'  # 00:05 Auckland time (accounts for DST)
   workflow_dispatch:
 
 jobs:
@@ -15,59 +15,56 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Create .gitignore if it doesn't exist
-    - name: Setup .gitignore
+    - name: Set up OpenVPN
       run: |
-        if [ ! -f .gitignore ]; then
-          echo "config.ovpn" >> .gitignore
-          echo "raw_config.ovpn" >> .gitignore
-          echo "auth.txt" >> .gitignore
-        fi
-
-    - name: Decode and Save OVPN Config
-      run: |
+        # Create config from secret
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
         fold -w 64 raw_config.ovpn > config.ovpn
-
-    - name: Install OpenVPN
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openvpn
-
-    - name: Create Auth File
-      run: |
+        
+        # Create auth file
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
         chmod 600 auth.txt
 
-    - name: Run OpenVPN
+        # Install OpenVPN
+        sudo apt-get update
+        sudo apt-get install -y openvpn
+
+    - name: Connect to VPN
       run: |
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10
+        sleep 15  # Give more time for connection to establish
+        curl --max-time 10 https://ipinfo.io  # Verify connection
 
-    - name: Verify VPN Connection
+    - name: Download and Update EPG Files
       run: |
-        curl --max-time 10 https://ipinfo.io
-
-    - name: Download and Process EPG Files
-      run: |
+        # Download and process files
         wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
         gunzip -c epg.xml.gz > epg.xml
+        
+        # Prepare public directory
         mkdir -p public
         rm -f public/epg.xml*
         mv epg.xml.gz public/
         mv epg.xml public/
 
-    - name: Commit and Push Changes
+    - name: Commit Changes
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add .gitignore public/
-        git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
-        git push origin main
+        git add public/
+        
+        # Only commit if there are changes
+        if ! git diff-index --quiet HEAD --; then
+          git commit -m "Auto-update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git pull --rebase origin main
+          git push origin main
+        else
+          echo "No changes to commit"
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Clean up
+    - name: Cleanup
       run: |
         sudo pkill openvpn || true
         rm -f config.ovpn raw_config.ovpn auth.txt
