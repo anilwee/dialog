@@ -3,10 +3,7 @@ name: VPN Connect and File Host
 on:
   schedule:
     # Runs at 00:05 Auckland time (UTC+12 or UTC+13)
-    # For UTC+12 (non-DST): 12:05 UTC previous day
-    # For UTC+13 (DST): 11:05 UTC previous day
-    # Using two schedules to account for DST changes
-    - cron: '05 11,12 * * *'  # Will trigger at both 11:05 and 12:05 UTC
+    - cron: '05 11,12 * * *'  # Triggers at both 11:05 and 12:05 UTC
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -16,98 +13,56 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Important for git history operations
 
     - name: Decode and Save OVPN Config
       run: |
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
         fold -w 64 raw_config.ovpn > config.ovpn
-        wc -L config.ovpn  # Check max line length
-        cat config.ovpn    # Optional: Inspect the file (remove in production)
 
     - name: Install OpenVPN
       run: |
         sudo apt-get update
         sudo apt-get install -y openvpn
-        sudo openvpn --version
 
     - name: Create Auth File
       run: |
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
-        chmod 600 auth.txt  # Secure the file for OpenVPN usage
-        cat auth.txt         # Optional: Inspect the file (remove in production)
+        chmod 600 auth.txt
 
     - name: Run OpenVPN
       run: |
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 10  # Allow time for the VPN connection to establish
+        sleep 10
 
     - name: Verify VPN Connection
       run: |
-        ip a  # Check the network interfaces
-        curl --max-time 10 https://ipinfo.io  # Verify new IP address via VPN
+        curl --max-time 10 https://ipinfo.io
 
-    - name: Download XML File in GZIP Format
+    - name: Download XML File
       run: |
         wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+        gunzip -c epg.xml.gz > epg.xml
 
-    - name: Get remote file timestamp
-      id: remote_timestamp
-      run: |
-        # Get the Last-Modified header from the remote file
-        TIMESTAMP=$(curl -sI https://watch.livecricketsl.xyz/epg/epg.xml.gz | grep -i Last-Modified | cut -d' ' -f2-)
-        # Convert to timestamp for comparison
-        TIMESTAMP=$(date -d "$TIMESTAMP" +%s)
-        echo "remote_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-
-    - name: Get local file timestamp (if exists)
-      id: local_timestamp
-      run: |
-        if [ -f "public/epg.xml.gz" ]; then
-          TIMESTAMP=$(date -r "public/epg.xml.gz" +%s)
-          echo "local_timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-        else
-          echo "local_timestamp=0" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Check if file is newer
-      id: check_newer
-      run: |
-        if [ ${{ steps.remote_timestamp.outputs.remote_timestamp }} -gt ${{ steps.local_timestamp.outputs.local_timestamp }} ] || ${{ github.event_name == 'workflow_dispatch' }}; then
-          echo "file_is_newer=true" >> $GITHUB_OUTPUT
-          echo "Newer file available or manual trigger, proceeding with download"
-        else
-          echo "file_is_newer=false" >> $GITHUB_OUTPUT
-          echo "Local file is up to date, skipping update"
-        fi
-
-    - name: Decompress XML File (if newer or manual trigger)
-      if: steps.check_newer.outputs.file_is_newer == 'true'
-      run: |
-        gunzip -c epg.xml.gz > epg.xml  # Extract epg.xml without removing epg.xml.gz
-
-    - name: Ensure Public Folder Exists
-      if: steps.check_newer.outputs.file_is_newer == 'true'
+    - name: Prepare Public Directory
       run: |
         mkdir -p public
+        # Force remove existing files if they exist
+        rm -f public/epg.xml* || true
 
-    - name: Move Files to Public Directory (if newer or manual trigger)
-      if: steps.check_newer.outputs.file_is_newer == 'true'
+    - name: Move New Files
       run: |
-        # Remove old files if they exist
-        rm -f public/epg.xml.gz public/epg.xml
-        # Move new files
-        mv epg.xml.gz public/epg.xml.gz
-        mv epg.xml public/epg.xml
+        mv epg.xml.gz public/
+        mv epg.xml public/
 
-    - name: Commit and Push Updated Files (if newer or manual trigger)
-      if: steps.check_newer.outputs.file_is_newer == 'true'
+    - name: Commit and Push Changes
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add public/epg.xml.gz public/epg.xml
-        git commit -m "Update EPG files (compressed and extracted) [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
-        git pull --rebase origin main  # Ensure you are up-to-date
-        git push origin main           # Push the changes
+        git add public/
+        git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
+        git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
