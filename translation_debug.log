@@ -2060,3 +2060,7 @@
 2025-05-27T23:04:39.346488 - Starting processing public/lk.xml
 2025-05-27T23:04:39.346541 - XML processing error: [Errno 2] No such file or directory: 'public/lk.xml'
 2025-05-27T23:04:39.346563 - Process failed
+2025-05-28T13:47:10.987360 - Loaded 118 translations
+2025-05-28T13:47:10.987395 - Starting processing public/lk.xml
+2025-05-28T13:47:10.987435 - XML processing error: [Errno 2] No such file or directory: 'public/lk.xml'
+2025-05-28T13:47:10.987456 - Process failed
