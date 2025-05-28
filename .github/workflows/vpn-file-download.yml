@@ -2,7 +2,7 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    - cron: '05 11,12 * * *'  # 00:05 Auckland time (accounts for DST)
+    - cron: '05 11,12 * * *'  # 00:05 Auckland time
   workflow_dispatch:
 
 jobs:
@@ -15,51 +15,61 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up OpenVPN
+    - name: Setup VPN
       run: |
-        # Create config from secret
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
         fold -w 64 raw_config.ovpn > config.ovpn
-        
-        # Create auth file
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
         chmod 600 auth.txt
+        sudo apt-get update && sudo apt-get install -y openvpn
 
-        # Install OpenVPN
-        sudo apt-get update
-        sudo apt-get install -y openvpn
-
-    - name: Connect to VPN
+    - name: Connect via VPN
       run: |
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 15  # Give more time for connection to establish
-        curl --max-time 10 https://ipinfo.io  # Verify connection
+        sleep 20
+        echo "VPN IP: $(curl -s --max-time 10 https://ipinfo.io/ip)"
 
-    - name: Download and Update EPG Files
+    - name: Download EPG Files
+      id: download
       run: |
-        # Download and process files
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
-        gunzip -c epg.xml.gz > epg.xml
-        
-        # Prepare public directory
-        mkdir -p public
-        rm -f public/epg.xml*
-        mv epg.xml.gz public/
-        mv epg.xml public/
+        if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          echo "Download successful"
+          gunzip -c epg.xml.gz > epg.xml
+          echo "size_xml=$(wc -c < epg.xml)" >> $GITHUB_OUTPUT
+          echo "size_gz=$(wc -c < epg.xml.gz)" >> $GITHUB_OUTPUT
+          echo "download_success=true" >> $GITHUB_OUTPUT
+        else
+          echo "Download failed"
+          echo "download_success=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
 
-    - name: Commit Changes
+    - name: Update Files (if download succeeded)
+      if: steps.download.outputs.download_success == 'true'
+      run: |
+        mkdir -p public
+        echo "Removing old files:"
+        rm -fv public/epg.xml public/epg.xml.gz || true
+        echo "Moving new files:"
+        mv -v epg.xml public/
+        mv -v epg.xml.gz public/
+        echo "New file sizes:"
+        ls -lh public/epg.xml*
+
+    - name: Commit Changes (if download succeeded)
+      if: steps.download.outputs.download_success == 'true'
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git add public/
+        git add public/epg.xml public/epg.xml.gz
         
-        # Only commit if there are changes
-        if ! git diff-index --quiet HEAD --; then
-          git commit -m "Auto-update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
+        if [ -n "$(git status --porcelain)" ]; then
+          git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
           git pull --rebase origin main
           git push origin main
+          echo "Changes pushed successfully"
         else
-          echo "No changes to commit"
+          echo "No changes to commit (files identical)"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
