@@ -11,7 +11,9 @@
 "News 1st": "නිවුස් 1st"
 "Main News": "ප්‍රධාන ප්‍රවෘත්ති"
 "News - Live": "සජීවී ප්‍රවෘත්ති"
+"News Live": "සජීවී ප්‍රවෘත්ති"
 "Prime Time News - Live": "ප්‍රධාන ප්‍රවෘත්ති - සජීවී"
+"Prime Time News Live": "ප්‍රධාන ප්‍රවෘත්ති - සජීවී"
 "News And Weather Report - Live": "ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී"
 "Breaking News": "හදිසි ප්‍රවෘත්ති"
 "News Bulletin": "ප්‍රවෘත්ති විකාශනය"
@@ -19,7 +21,7 @@
 "Lunch time News": "දහවල් ප්‍රවෘත්ති"
 "Evening News": "සවස් ප්‍රවෘත්ති"
 "Nightly News": "රාත්‍රී ප්‍රවෘත්ති"
-"Midnight News": "මැදියම් රාත්‍රී ප්‍රවෘත්ති"
+"Mid Night News": "මැදියම් රාත්‍රී ප්‍රවෘත්ති"
 "Daily News": "දිනපතා ප්‍රවෘත්ති"
 "Current Affairs": "වත්මන් සිදුවීම්"
 "Ethera Methera": "එතෙර මෙතෙර"
@@ -31,8 +33,11 @@
 "Paththara Sirasthala - Live": "පත්තර සිරස්තල - සජිවී"
 "Govibimata Arunalu - Agriculture": "ගොවිබිමට අරුණලු"
 "Pathikada": "පැතිකඩ"
-"Adaraneeya Jeewithaya Live": "ආදරණිය ජීවිතය - සජිවී"
+"Adaraneeya Jeevithaya Live": "ආදරණිය ජීවිතය - සජිවී"
 "Satana": "සටන"
+"Siyatha Teli Waki": "සියත ටෙලි වැකිය"
+"Jeewitheta Ida Denna": "ජිවිතේට ඉඩ දෙන්න"
+"Lunch Time TV": "ලන්ච් ටයිම් ටිවී"
 
 # Entertainment Programs
 "Entertainment": "විනෝදාස්වාදය"
@@ -50,12 +55,21 @@
 "Talent Show": "තරු අභියෝගය"
 "Musical Program": "සංගීත වැඩසටහන"
 "Kadalla": "කැදැල්ල"
-"Surapappa": "සූරපප්පා"
+"Sura Pappa": "සූරපප්පා"
 "Siyatha Movie festival": "සියත මූවී ෆෙස්ටිවල්"
 "Soba": "සෝබා"
 "Tharu Samaga Tharu": "තරු සමග තරු"
 "Sirasa Paththare": "සිරස පත්තරේ"
 "Jivitheta Ida Denna": "ජීවිතේට ඉඩ දෙන්න"
+"Lunch Time Music": "දිවා ගී"
+"Siyatha Movie Festiwal": "සියත සිනෙමා වසන්තය"
+"Siyatha ": "සියත සිනෙමා වසන්තය"
+"Subasiri ": "සුභාසිරි"
+"Sirasa Tharu Irida": "සිරස තරු ඉරිදා"
+"Mawa Mathakada": "මාව මතකද"
+"Giripura Aththo": "ගිරිපුර ඇත්තෝ"
+
+
 
 # Educational and Cultural
 "Educational": "අධ්‍යාපනික"
@@ -121,6 +135,7 @@
 "Sanhinda": "සංහිද"
 "Mihikatha Dinuwo": "මිහිකත දිනුවෝ"
 "Religious Talk": "ආගමික සාකච්චා"
+"Damsaviya": "දම්සවිය"
 
 # Common Descriptors
 "Update": "යාවත්කාලීන කිරීම"
