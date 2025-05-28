@@ -2,7 +2,11 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    - cron: '00 11 * * *'  # 1 AM NZT (UTC+12 or +13)
+    # Runs at 00:05 Auckland time (UTC+12 or UTC+13)
+    # For UTC+12 (non-DST): 12:05 UTC previous day
+    # For UTC+13 (DST): 11:05 UTC previous day
+    # Using two schedules to account for DST changes
+    - cron: '05 11,12 * * *'  # Will trigger at both 11:05 and 12:05 UTC
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -68,15 +72,15 @@ jobs:
     - name: Check if file is newer
       id: check_newer
       run: |
-        if [ ${{ steps.remote_timestamp.outputs.remote_timestamp }} -gt ${{ steps.local_timestamp.outputs.local_timestamp }} ]; then
+        if [ ${{ steps.remote_timestamp.outputs.remote_timestamp }} -gt ${{ steps.local_timestamp.outputs.local_timestamp }} ] || ${{ github.event_name == 'workflow_dispatch' }}; then
           echo "file_is_newer=true" >> $GITHUB_OUTPUT
-          echo "Newer file available, proceeding with download"
+          echo "Newer file available or manual trigger, proceeding with download"
         else
           echo "file_is_newer=false" >> $GITHUB_OUTPUT
           echo "Local file is up to date, skipping update"
         fi
 
-    - name: Decompress XML File (if newer)
+    - name: Decompress XML File (if newer or manual trigger)
       if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         gunzip -c epg.xml.gz > epg.xml  # Extract epg.xml without removing epg.xml.gz
@@ -86,13 +90,16 @@ jobs:
       run: |
         mkdir -p public
 
-    - name: Move Files to Public Directory (if newer)
+    - name: Move Files to Public Directory (if newer or manual trigger)
       if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
+        # Remove old files if they exist
+        rm -f public/epg.xml.gz public/epg.xml
+        # Move new files
         mv epg.xml.gz public/epg.xml.gz
         mv epg.xml public/epg.xml
 
-    - name: Commit and Push Updated Files (if newer)
+    - name: Commit and Push Updated Files (if newer or manual trigger)
       if: steps.check_newer.outputs.file_is_newer == 'true'
       run: |
         git config --global user.name "GitHub Actions Bot"
@@ -103,3 +110,7 @@ jobs:
         git push origin main           # Push the changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Clean up VPN connection
+      run: |
+        sudo pkill openvpn || true
