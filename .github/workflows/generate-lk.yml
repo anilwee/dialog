@@ -2,48 +2,49 @@ name: Generate Sri Lanka EPG
 
 on:
   schedule:
-    - cron: "30 0 * * *"
+    - cron: "30 12 * * *"  # 12:30 UTC = 01:30 NZST
   workflow_dispatch:
 
 jobs:
-  generate-lk-epg:
+  generate-epg:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
+    
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v3
-
+      with:
+        fetch-depth: 0
+        
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-
-    - name: Install Dependencies
+        
+    - name: Install dependencies
+      run: pip install defusedxml
+      
+    - name: Verify input
       run: |
-        sudo apt-get update
-        sudo apt-get install -y libxml2-utils xmlstarlet
-        pip install defusedxml requests
-
-    - name: Create directories
-      run: mkdir -p public
-
-    - name: Run EPG Filter
+        echo "Input file:"
+        ls -lh public/epg.xml
+        echo "First 5 lines:"
+        head -n 5 public/epg.xml
+        
+    - name: Generate EPG
       run: python3 generate_lk.py
-
-    - name: Verify Output
+      
+    - name: Verify output
       run: |
-        if [ -f "public/lk.xml" ]; then
-          echo "EPG generated successfully"
-          echo "Channels found: $(grep -c '<channel' public/lk.xml)"
-          echo "Programs found: $(grep -c '<programme' public/lk.xml)"
-        else
-          echo "Error: Failed to generate EPG"
-          exit 1
-        fi
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: sri-lanka-epg
-        path: public/lk.xml
+        echo "Generated file:"
+        ls -lh public/lk.xml
+        echo "Channels found:"
+        grep -A1 "<channel" public/lk.xml | grep "display-name" || echo "None"
+        
+    - name: Commit changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add public/lk.xml
+        git commit -m "Auto-update EPG data [skip ci]" || echo "No changes to commit"
+        git push
