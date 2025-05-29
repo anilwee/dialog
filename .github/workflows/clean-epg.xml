@@ -1,0 +1,54 @@
+name: Clean EPG Files
+
+on:
+  schedule:
+    # Runs at 23:35 Auckland time (UTC+12 or UTC+13)
+    # For UTC+12 (non-DST): 11:35 UTC same day
+    # For UTC+13 (DST): 10:35 UTC same day
+    - cron: '35 10,11 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  clean-epg-files:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Delete EPG files
+      run: |
+        if [ -f "public/epg.xml" ]; then
+          echo "Deleting epg.xml"
+          rm -v public/epg.xml
+        else
+          echo "epg.xml not found"
+        fi
+        
+        if [ -f "public/epg.xml.gz" ]; then
+          echo "Deleting epg.xml.gz"
+          rm -v public/epg.xml.gz
+        else
+          echo "epg.xml.gz not found"
+        fi
+
+    - name: Commit and push changes
+      if: always()
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        
+        # Check if there are any changes to commit
+        if git ls-files --deleted | grep -q 'public/epg.xml\|public/epg.xml.gz'; then
+          git add -u public/ # Stage deletions
+          git commit -m "Remove old EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git pull --rebase origin main
+          git push origin main
+          echo "File deletions committed"
+        else
+          echo "No files to delete"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
