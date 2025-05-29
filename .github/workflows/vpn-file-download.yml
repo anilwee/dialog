@@ -2,12 +2,17 @@ name: VPN Connect and File Host
 
 on:
   schedule:
-    - cron: '05 11,12 * * *'  # 00:05 Auckland time
+    - cron: '05 11,12 * * *'
   workflow_dispatch:
 
 jobs:
   vpn-download-host:
     runs-on: ubuntu-latest
+    env:
+      GIT_AUTHOR_NAME: "GitHub Actions Bot"
+      GIT_AUTHOR_EMAIL: "actions@github.com"
+      GIT_COMMITTER_NAME: "GitHub Actions Bot"
+      GIT_COMMITTER_EMAIL: "actions@github.com"
 
     steps:
     - name: Checkout Repository
@@ -15,17 +20,19 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup VPN
+    - name: Setup VPN Config
       run: |
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > raw_config.ovpn
-        fold -w 64 raw_config.ovpn > config.ovpn
-        printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
-        chmod 600 auth.txt
-        sudo apt-get update && sudo apt-get install -y openvpn
+        # Create VPN files outside of workspace to avoid git detection
+        mkdir -p /tmp/vpn_config
+        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/raw_config.ovpn
+        fold -w 64 /tmp/vpn_config/raw_config.ovpn > /tmp/vpn_config/config.ovpn
+        printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
+        chmod 600 /tmp/vpn_config/auth.txt
 
-    - name: Connect via VPN
+    - name: Install and Connect VPN
       run: |
-        sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+        sudo apt-get update && sudo apt-get install -y openvpn
+        sudo openvpn --config /tmp/vpn_config/config.ovpn --auth-user-pass /tmp/vpn_config/auth.txt --daemon
         sleep 20
         echo "VPN IP: $(curl -s --max-time 10 https://ipinfo.io/ip)"
 
@@ -33,43 +40,37 @@ jobs:
       id: download
       run: |
         if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-          echo "Download successful"
           gunzip -c epg.xml.gz > epg.xml
-          echo "size_xml=$(wc -c < epg.xml)" >> $GITHUB_OUTPUT
-          echo "size_gz=$(wc -c < epg.xml.gz)" >> $GITHUB_OUTPUT
           echo "download_success=true" >> $GITHUB_OUTPUT
         else
-          echo "Download failed"
           echo "download_success=false" >> $GITHUB_OUTPUT
           exit 1
         fi
 
-    - name: Update Files (if download succeeded)
+    - name: Update Public Files
       if: steps.download.outputs.download_success == 'true'
       run: |
         mkdir -p public
-        echo "Removing old files:"
-        rm -fv public/epg.xml public/epg.xml.gz || true
-        echo "Moving new files:"
-        mv -v epg.xml public/
-        mv -v epg.xml.gz public/
-        echo "New file sizes:"
-        ls -lh public/epg.xml*
+        # Force remove existing files
+        rm -f public/epg.xml public/epg.xml.gz || true
+        # Move new files and set permissions
+        mv epg.xml epg.xml.gz public/
+        chmod 644 public/*
 
-    - name: Commit Changes (if download succeeded)
+    - name: Commit and Push Changes
       if: steps.download.outputs.download_success == 'true'
       run: |
-        git config --global user.name "GitHub Actions Bot"
-        git config --global user.email "actions@github.com"
+        # Explicitly add only the files we want to track
         git add public/epg.xml public/epg.xml.gz
         
-        if [ -n "$(git status --porcelain)" ]; then
+        # Check if there are changes to commit
+        if [ -n "$(git status --porcelain -- public/)" ]; then
           git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
           git pull --rebase origin main
           git push origin main
           echo "Changes pushed successfully"
         else
-          echo "No changes to commit (files identical)"
+          echo "No changes in EPG files to commit"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,4 +78,4 @@ jobs:
     - name: Cleanup
       run: |
         sudo pkill openvpn || true
-        rm -f config.ovpn raw_config.ovpn auth.txt
+        rm -rf /tmp/vpn_config
