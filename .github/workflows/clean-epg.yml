@@ -5,7 +5,7 @@ on:
     # Runs at 23:55 Auckland time (UTC+12 or UTC+13)
     # For UTC+12 (non-DST): 11:55 UTC same day
     # For UTC+13 (DST): 10:55 UTC same day
-    - cron: '55 10,11 * * *'
+    - cron: '55 12 * * *'  # 1:00 AM AKL time
   workflow_dispatch: # Allows manual triggering
 
 jobs:
