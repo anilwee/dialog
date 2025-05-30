@@ -2,7 +2,7 @@ name: Generate Sri Lanka EPG
 
 on:
   schedule:
-    - cron: "30 12 * * *"  # 12:30 UTC = 01:30 NZST
+    - cron: '15 13 * * *'  # 1:15 AM AKL time
   workflow_dispatch:
 
 jobs:
