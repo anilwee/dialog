@@ -11278,3 +11278,421 @@
 2025-06-14T06:24:15.285613 - Processed 3 channels and 442 programmes
 2025-06-14T06:24:15.361545 - Successfully wrote public/si.xml
 2025-06-14T06:24:15.364261 - Process succeeded
+2025-06-14T13:41:07.216851 - Loaded 128 translations
+2025-06-14T13:41:07.216896 - Starting processing public/lk.xml
+2025-06-14T13:41:07.258853 - Updated Rupavahini display-name to Rupavahini
+2025-06-14T13:41:07.258896 - Updated Sirasa TV display-name to Sirasa TV
+2025-06-14T13:41:07.258919 - Updated Siyatha TV display-name to Siyatha TV
+2025-06-14T13:41:07.259741 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.259786 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.259831 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.259862 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.259887 - Translated title: Sivudesa - Live → සිව්දෙස
+2025-06-14T13:41:07.259910 - Translated desc: Sivudesa - Live → සිව්දෙස
+2025-06-14T13:41:07.259933 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.259956 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.259990 - Translated title: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.260013 - Translated desc: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.260034 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.260056 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.260078 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260099 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260121 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.260143 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.260164 - Translated title: Sanhinda → සංහිද
+2025-06-14T13:41:07.260185 - Translated desc: Sanhinda → සංහිද
+2025-06-14T13:41:07.260205 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260226 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260247 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.260268 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.260295 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260317 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260340 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.260362 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.260444 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260466 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260540 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260562 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.260610 - Translated title: Mihikatha Dinuwo → මිහිකත දිනුවෝ
+2025-06-14T13:41:07.260637 - Translated desc: Mihikatha Dinuwo → මිහිකත දිනුවෝ
+2025-06-14T13:41:07.260712 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.260735 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.260823 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.260852 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.260875 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.260897 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.260931 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.260965 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.260999 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.261033 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.261055 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.261076 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.261098 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.261119 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.261312 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261341 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261364 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.261385 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.261458 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261480 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261626 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261648 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261766 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.261787 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.261875 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261901 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.261923 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.261945 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.261978 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.262010 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.262032 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.262052 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.262073 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.262124 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.262163 - Translated title: Samma Ditti → සම්මා දිට්ටී
+2025-06-14T13:41:07.262202 - Translated desc: Samma Ditti → සම්මා දිට්ටී
+2025-06-14T13:41:07.262241 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.262279 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.262316 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.262360 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.262456 - Translated title: Sunday Ayubowan - Live → ඉරිදා ආයුබෝවන් - සජිවී
+2025-06-14T13:41:07.262495 - Translated desc: Sunday Ayubowan - Live → ඉරිදා ආයුබෝවන් - සජිවී
+2025-06-14T13:41:07.262569 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.262593 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.262664 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.262707 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.262821 - Translated title: Ayubowewa → ආයූබෝවේවා
+2025-06-14T13:41:07.262877 - Translated desc: Ayubowewa → ආයූබෝවේවා
+2025-06-14T13:41:07.262924 - Translated title: Kreeda Visithuru - Live → ක්‍රීඩා විසිතුරු - සජීවී
+2025-06-14T13:41:07.262971 - Translated desc: Kreeda Visithuru - Live → ක්‍රීඩා විසිතුරු - සජීවී
+2025-06-14T13:41:07.263123 - Translated title: Business In Brief → ව්‍යාපාරික තොරතුරු සැකෙවින්
+2025-06-14T13:41:07.263163 - Translated desc: Business In Brief → ව්‍යාපාරික තොරතුරු සැකෙවින්
+2025-06-14T13:41:07.263201 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.263234 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.263272 - Translated title: Ethera Mether → එතෙර මෙතෙර
+2025-06-14T13:41:07.263316 - Translated desc: Ethera Mether → එතෙර මෙතෙර
+2025-06-14T13:41:07.263398 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.263433 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.263551 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.263583 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.263691 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.263713 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.263746 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.263779 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.263821 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.263859 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.263883 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.263904 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.263954 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.263975 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.263996 - Translated title: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.264018 - Translated desc: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.264039 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.264059 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.264132 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264154 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264201 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264221 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264314 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264335 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264428 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.264449 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.264469 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264489 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.264509 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.264537 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.264611 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.264632 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.264748 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.264769 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.264800 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.264868 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.264891 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.264913 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.264934 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.264955 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.265002 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.265023 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.265067 - Translated title: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.265112 - Translated desc: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.265156 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.265192 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.265226 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265259 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265291 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.265323 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.265404 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265436 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265465 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.265487 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.265509 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265529 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265550 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.265570 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.265643 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265664 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265735 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265756 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.265777 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.265798 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.265912 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.265935 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.266014 - Translated title: Documentary → ලේඛන චිත්‍ර
+2025-06-14T13:41:07.266036 - Translated desc: Documentary → ලේඛන චිත්‍ර
+2025-06-14T13:41:07.266057 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.266078 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.266099 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.266119 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.266152 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.266184 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.266215 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.266245 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.266267 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.266288 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.266308 - Translated title: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.266329 - Translated desc: Manudam Prarthana → මනුදම් ප්‍රාර්ථනා
+2025-06-14T13:41:07.266350 - Translated title: Sivudesa - Live → සිව්දෙස
+2025-06-14T13:41:07.266370 - Translated desc: Sivudesa - Live → සිව්දෙස
+2025-06-14T13:41:07.266391 - Translated title: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.266411 - Translated desc: Paththara Sirasthala - Live → පත්තර සිරස්තල - සජිවී
+2025-06-14T13:41:07.266432 - Translated title: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.266451 - Translated desc: Aluth Dinak- Live → අලුත් දිනක්
+2025-06-14T13:41:07.266472 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.266492 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.266512 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266532 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266553 - Translated title: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.266573 - Translated desc: Nuga Sevana - Live → නුග සෙවන සජීවී
+2025-06-14T13:41:07.266594 - Translated title: Ru Tunes → රු ටියුන්ස්
+2025-06-14T13:41:07.266614 - Translated desc: Ru Tunes → රු ටියුන්ස්
+2025-06-14T13:41:07.266634 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266654 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266675 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.266696 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.266717 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266737 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266757 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.266777 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.266877 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266902 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.266958 - Translated title: Nada Ranga → නාද රංග
+2025-06-14T13:41:07.266979 - Translated desc: Nada Ranga → නාද රංග
+2025-06-14T13:41:07.267000 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267020 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267040 - Translated title: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.267060 - Translated desc: News - Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.267081 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267100 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267179 - Translated title: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.267223 - Translated desc: News And Weather Report - Live → ප්‍රවෘත්ති සහ කාළගුණ වාර්තාව- සජීවී
+2025-06-14T13:41:07.267307 - Translated title: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267330 - Translated desc: Musical Programme → සංගීතමය වැඩසටහන
+2025-06-14T13:41:07.267379 - Translated title: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.267400 - Translated desc: Seth Pirith → සෙත් පිරිත්
+2025-06-14T13:41:07.267433 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.267465 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.267685 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.267707 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.267728 - Translated title: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.267749 - Translated desc: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.267849 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.267878 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.268000 - Translated title: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.268021 - Translated desc: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.268137 - Translated title: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.268158 - Translated desc: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.268299 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.268320 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.268458 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.268479 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.268512 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.268544 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.268565 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.268585 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.268607 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.268627 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.268699 - Translated title: Kids 1st → කිඩ්ස් 1st
+2025-06-14T13:41:07.268720 - Translated desc: Kids 1st → කිඩ්ස් 1st
+2025-06-14T13:41:07.268740 - Translated title: Kids Movie → ළමා චිත්‍රපට
+2025-06-14T13:41:07.268760 - Translated desc: Kids Movie → ළමා චිත්‍රපට
+2025-06-14T13:41:07.268840 - Translated title: Sura Pappa → සූරපප්පා
+2025-06-14T13:41:07.268869 - Translated desc: Sura Pappa → සූරපප්පා
+2025-06-14T13:41:07.268891 - Translated title: Kadalla → කැදැල්ල
+2025-06-14T13:41:07.268912 - Translated desc: Kadalla → කැදැල්ල
+2025-06-14T13:41:07.268960 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.268981 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.269028 - Translated title: Tharu Samaga Tharu → තරු සමග තරු
+2025-06-14T13:41:07.269049 - Translated desc: Tharu Samaga Tharu → තරු සමග තරු
+2025-06-14T13:41:07.269195 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.269226 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.269247 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.269268 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.269288 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.269308 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.269328 - Translated title: Damsaviya → දම්සවිය
+2025-06-14T13:41:07.269348 - Translated desc: Damsaviya → දම්සවිය
+2025-06-14T13:41:07.269397 - Translated title: Kids Movie → ළමා චිත්‍රපට
+2025-06-14T13:41:07.269417 - Translated desc: Kids Movie → ළමා චිත්‍රපට
+2025-06-14T13:41:07.269465 - Translated title: Sura Pappa → සූරපප්පා
+2025-06-14T13:41:07.269485 - Translated desc: Sura Pappa → සූරපප්පා
+2025-06-14T13:41:07.269532 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.269552 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.269573 - Translated title: Sirasa Tharu Irida → සිරස තරු ඉරිදා
+2025-06-14T13:41:07.269594 - Translated desc: Sirasa Tharu Irida → සිරස තරු ඉරිදා
+2025-06-14T13:41:07.269734 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.269754 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.269790 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.269860 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.269890 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.269912 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.269934 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.269955 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.269976 - Translated title: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.269997 - Translated desc: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.270069 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.270090 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.270207 - Translated title: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.270228 - Translated desc: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.270345 - Translated title: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.270366 - Translated desc: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.270507 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.270528 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.270700 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.270732 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.270761 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.270783 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.270826 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.270860 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.270885 - Translated title: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.270906 - Translated desc: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.270978 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.270999 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.271117 - Translated title: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.271138 - Translated desc: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.271258 - Translated title: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.271279 - Translated desc: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.271417 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.271438 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.271578 - Translated title: Satana → සටන
+2025-06-14T13:41:07.271599 - Translated desc: Satana → සටන
+2025-06-14T13:41:07.271637 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.271669 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.271691 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.271711 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.271732 - Translated title: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.271752 - Translated desc: News @ 7 → ප්‍රවෘත්ති @ 7
+2025-06-14T13:41:07.271772 - Translated title: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.271793 - Translated desc: Pathikada → පැතිකඩ
+2025-06-14T13:41:07.271886 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.271913 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.272033 - Translated title: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.272054 - Translated desc: Lunch Time TV → ලන්ච් ටයිම් ටිවී
+2025-06-14T13:41:07.272172 - Translated title: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.272194 - Translated desc: Giripura Aththo → ගිරිපුර ඇත්තෝ
+2025-06-14T13:41:07.272338 - Translated title: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.272358 - Translated desc: Mawa Mathakada → මාව මතකද
+2025-06-14T13:41:07.272534 - Translated title: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.272565 - Translated desc: End Of Transmission → වැඩසටහන් නිමාව
+2025-06-14T13:41:07.272586 - Translated title: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.272607 - Translated desc: Station Opening → විකාශණ ආරම්භය
+2025-06-14T13:41:07.273018 - Translated title: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.273066 - Translated desc: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.273109 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.273149 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.273187 - Translated title: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.273234 - Translated desc: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.273472 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.273515 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.273703 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.273729 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.273930 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.273960 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.274012 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274035 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274057 - Translated title: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.274077 - Translated desc: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.274110 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.274140 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.274192 - Translated title: Sonduru Piyasa → සොදුරු පියස
+2025-06-14T13:41:07.274214 - Translated desc: Sonduru Piyasa → සොදුරු පියස
+2025-06-14T13:41:07.274276 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.274300 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.274350 - Translated title: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.274372 - Translated desc: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.274394 - Translated title: Soba → සෝබා
+2025-06-14T13:41:07.274426 - Translated desc: Soba → සෝබා
+2025-06-14T13:41:07.274474 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274494 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274516 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.274537 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.274559 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.274581 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.274630 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274651 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.274672 - Translated title: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.274693 - Translated desc: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.274713 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.274758 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.274955 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.274994 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.275047 - Translated title: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.275070 - Translated desc: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.275119 - Translated title: Drama → නාට්ය
+2025-06-14T13:41:07.275141 - Translated desc: Drama → නාට්ය
+2025-06-14T13:41:07.275163 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275184 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275205 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.275226 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.275247 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.275269 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.275316 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275338 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275361 - Translated title: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.275382 - Translated desc: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.275404 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.275426 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.275448 - Translated title: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.275469 - Translated desc: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.275590 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.275611 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.275633 - Translated title: Lunch Time Music → දිවා ගී
+2025-06-14T13:41:07.275654 - Translated desc: Lunch Time Music → දිවා ගී
+2025-06-14T13:41:07.275676 - Translated title: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.275698 - Translated desc: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.275771 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275792 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.275977 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.276005 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.276056 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276078 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276246 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.276267 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.276386 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276414 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276512 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.276534 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.276583 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276604 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.276630 - Translated title: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.276652 - Translated desc: News @ 06.00 AM → ප්‍රවෘත්ති @ 06.00AM
+2025-06-14T13:41:07.276674 - Translated title: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.276698 - Translated desc: Siyatha Paththare Live → සියත පත්තරේ සජීවී
+2025-06-14T13:41:07.276720 - Translated title: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.276742 - Translated desc: Adaraneeya Jeevithaya Live → ආදරණිය ජීවිතය - සජිවී
+2025-06-14T13:41:07.276883 - Translated title: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.276910 - Translated desc: News @ 12 Noon Live → ප්‍රවෘත්ති @ පස්වරු 12 සජීවී
+2025-06-14T13:41:07.276932 - Translated title: Lunch Time Music → දිවා ගී
+2025-06-14T13:41:07.276954 - Translated desc: Lunch Time Music → දිවා ගී
+2025-06-14T13:41:07.276976 - Translated title: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.276997 - Translated desc: Siyatha Movie Festiwal → සියත සිනෙමා වසන්තය
+2025-06-14T13:41:07.277070 - Translated title: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.277092 - Translated desc: News Live → සජීවී ප්‍රවෘත්ති
+2025-06-14T13:41:07.277236 - Translated title: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.277257 - Translated desc: Prime Time News Live → ප්‍රධාන ප්‍රවෘත්ති - සජීවී
+2025-06-14T13:41:07.277279 - Translated title: Movie → චිත්‍රපට
+2025-06-14T13:41:07.277300 - Translated desc: Movie → චිත්‍රපට
+2025-06-14T13:41:07.277321 - Translated title: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.277342 - Translated desc: Mid Night News → මැදියම් රාත්‍රී ප්‍රවෘත්ති
+2025-06-14T13:41:07.278129 - Processed 3 channels and 442 programmes
+2025-06-14T13:41:07.354779 - Successfully wrote public/si.xml
+2025-06-14T13:41:07.357961 - Process succeeded
