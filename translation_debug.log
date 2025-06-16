@@ -12114,3 +12114,5 @@
 2025-06-15T13:41:25.571798 - Processed 3 channels and 442 programmes
 2025-06-15T13:41:25.648860 - Successfully wrote public/si.xml
 2025-06-15T13:41:25.651846 - Process succeeded
+[DEBUG] 2025-06-16T13:49:44.829926 - Translation stats: {'cached': 972, 'translated': 0, 'skipped': 889}
+[DEBUG] 2025-06-16T13:49:44.913798 - Process completed successfully
