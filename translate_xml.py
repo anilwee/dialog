@@ -10,13 +10,23 @@ SKIP_CHANNELS = {"ART Television", "Vasantham TV", "Nethra TV", "Shakthi TV", "H
 CACHE_FILE = '.translation_cache.json'
 
 def debug_log(message):
-    print(f"[DEBUG] {datetime.now().isoformat()} - {message}")
-    with open('translation_debug.log', 'a') as f:
-        f.write(f"{datetime.now().isoformat()} - {message}\n")
+    timestamp = datetime.now().isoformat()
+    log_msg = f"[DEBUG] {timestamp} - {message}"
+    print(log_msg)
+    with open('translation_debug.log', 'a', encoding='utf-8') as f:
+        f.write(log_msg + "\n")
+
+def load_translations():
+    try:
+        with open('translation_mappings.yml', 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f) or {}
+    except Exception as e:
+        debug_log(f"Failed to load translations: {str(e)}")
+        return {}
 
 def load_cache():
     try:
-        with open(CACHE_FILE) as f:
+        with open(CACHE_FILE, 'r') as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
@@ -25,20 +35,29 @@ def save_cache(cache):
     with open(CACHE_FILE, 'w') as f:
         json.dump(cache, f)
 
-def process_xml(input_path, output_path, translations):
+def process_xml():
+    translations = load_translations()
     cache = load_cache()
     stats = {'cached': 0, 'translated': 0, 'skipped': 0}
-    
+
     try:
-        tree = ET.parse(input_path)
+        # Create minimal XML if source doesn't exist
+        if not os.path.exists('public/lk.xml'):
+            debug_log("Generating minimal si.xml")
+            root = ET.Element('tv')
+            ET.SubElement(root, 'channel', {'id': 'default'})
+            ET.ElementTree(root).write('public/si.xml', encoding='utf-8', xml_declaration=True)
+            return True
+
+        tree = ET.parse('public/lk.xml')
         root = tree.getroot()
-        
+
         for programme in root.findall('.//programme'):
             channel = programme.get('channel', '')
             if channel in SKIP_CHANNELS:
                 stats['skipped'] += 1
                 continue
-            
+
             # Process titles
             if (title := programme.find('title[@lang="si"]')) is not None and title.text:
                 text_hash = md5(title.text.strip().encode()).hexdigest()
@@ -49,7 +68,7 @@ def process_xml(input_path, output_path, translations):
                     cache[text_hash] = translations[title.text]
                     title.text = translations[title.text]
                     stats['translated'] += 1
-            
+
             # Process descriptions
             if (desc := programme.find('desc[@lang="si"]')) is not None and desc.text:
                 text_hash = md5(desc.text.strip().encode()).hexdigest()
@@ -62,31 +81,18 @@ def process_xml(input_path, output_path, translations):
                     stats['translated'] += 1
 
         save_cache(cache)
-        debug_log(f"Stats: {stats}")
+        debug_log(f"Translation stats: {stats}")
         
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        os.makedirs('public', exist_ok=True)
+        tree.write('public/si.xml', encoding='utf-8', xml_declaration=True)
         return True
 
     except Exception as e:
-        debug_log(f"Error: {str(e)}")
+        debug_log(f"Critical error: {str(e)}")
         return False
 
 if __name__ == "__main__":
-    try:
-        translations = yaml.safe_load(open('translation_mappings.yml')) or {}
-    except Exception as e:
-        debug_log(f"Failed to load translations: {str(e)}")
-        translations = {}
-
-    input_path = 'public/lk.xml'
-    output_path = 'public/si.xml'
-    
-    if not os.path.exists(input_path):
-        debug_log("Creating minimal si.xml")
-        root = ET.Element('tv')
-        ET.SubElement(root, 'channel', {'id': 'default'})
-        ET.ElementTree(root).write(output_path, encoding='utf-8', xml_declaration=True)
-    else:
-        success = process_xml(input_path, output_path, translations)
-        debug_log(f"Process {'succeeded' if success else 'failed'}")
+    success = process_xml()
+    debug_log(f"Process {'completed successfully' if success else 'failed'}")
+    if not success:
+        exit(1)
