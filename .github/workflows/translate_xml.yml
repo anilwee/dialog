@@ -10,8 +10,8 @@ on:
   
   workflow_dispatch:
     inputs:
-      force:
-        description: 'Force regeneration'
+      debug:
+        description: 'Enable debug mode'
         required: false
         default: 'false'
 
@@ -24,38 +24,59 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Verify files exist
+        run: |
+          ls -la public/ || true
+          [ -f "public/lk.xml" ] || echo "::warning::lk.xml not found"
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: pip install pyyaml requests
 
-      - name: Check for changes
-        id: check-changes
-        run: |
-          if [ -f "public/si.xml" ] && [ "public/lk.xml" -ot "public/si.xml" ]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Run XML processor
-        if: steps.check-changes.outputs.skip != 'true'
+      - name: Run with debug
+        if: github.event.inputs.debug == 'true'
         run: |
           python translate_xml.py \
             --input public/lk.xml \
             --output public/si.xml \
             --mappings translation_mappings.yml \
-            --max-api-calls 500
+            --max-api-calls 50  # Reduced for testing
+
+      - name: Run normally
+        if: github.event.inputs.debug != 'true'
+        run: |
+          python translate_xml.py \
+            --input public/lk.xml \
+            --output public/si.xml \
+            --mappings translation_mappings.yml
+
+      - name: Verify output
+        run: |
+          if [ -f "public/si.xml" ]; then
+            echo "::notice::si.xml generated successfully"
+            echo "First 10 lines:"
+            head -n 10 public/si.xml
+          else
+            echo "::error::No si.xml was generated!"
+            echo "Debug log:"
+            cat translation_debug.log || true
+            exit 1
+          fi
 
       - name: Commit results
-        if: success() && steps.check-changes.outputs.skip != 'true'
+        if: success() && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/si.xml translation_cache.json
-          git diff --cached --quiet || \
-            (git commit -m "Auto-updated SI XML [skip ci]" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-generated SI XML [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
