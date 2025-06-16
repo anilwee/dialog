@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from hashlib import md5
 import json
+import sys
 
 # Configuration
 SKIP_CHANNELS = {"ART Television", "Vasantham TV", "Nethra TV", "Shakthi TV", "Hi TV"}
@@ -20,6 +21,9 @@ def load_translations():
     try:
         with open('translation_mappings.yml', 'r', encoding='utf-8') as f:
             return yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        debug_log("translation_mappings.yml not found. No translations will be applied.")
+        return {}
     except Exception as e:
         debug_log(f"Failed to load translations: {str(e)}")
         return {}
@@ -41,6 +45,8 @@ def process_xml():
     stats = {'cached': 0, 'translated': 0, 'skipped': 0}
 
     try:
+        os.makedirs('public', exist_ok=True)
+
         # Create minimal XML if source doesn't exist
         if not os.path.exists('public/lk.xml'):
             debug_log("Generating minimal si.xml")
@@ -82,8 +88,7 @@ def process_xml():
 
         save_cache(cache)
         debug_log(f"Translation stats: {stats}")
-        
-        os.makedirs('public', exist_ok=True)
+
         tree.write('public/si.xml', encoding='utf-8', xml_declaration=True)
         return True
 
@@ -95,4 +100,4 @@ if __name__ == "__main__":
     success = process_xml()
     debug_log(f"Process {'completed successfully' if success else 'failed'}")
     if not success:
-        exit(1)
+        sys.exit(1)
