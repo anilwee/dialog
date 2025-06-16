@@ -1,0 +1,21 @@
+name: Translate LK → SI XML
+
+on:
+  push:
+    paths:
+      - 'public/lk.xml'
+      - 'public/translation_mappings.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: pip install pyyaml
+      - run: python public/translate_xml.py
+      - run: |
+          git config user.name 'github-actions'
+          git config user.email 'actions@github.com'
+          git add public/si.xml
+          git commit -m "Update si.xml"
+          git push
