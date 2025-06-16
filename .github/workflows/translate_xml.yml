@@ -24,27 +24,38 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: pip install pyyaml requests
 
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if [ -f "public/si.xml" ] && [ "public/lk.xml" -ot "public/si.xml" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run XML processor
+        if: steps.check-changes.outputs.skip != 'true'
         run: |
           python translate_xml.py \
             --input public/lk.xml \
             --output public/si.xml \
-            --mappings translation_mappings.yml
+            --mappings translation_mappings.yml \
+            --max-api-calls 500
 
       - name: Commit results
-        if: success()
+        if: success() && steps.check-changes.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/si.xml
+          git add public/si.xml translation_cache.json
           git diff --cached --quiet || \
             (git commit -m "Auto-updated SI XML [skip ci]" && git push)
