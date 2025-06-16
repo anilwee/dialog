@@ -6,6 +6,7 @@ import os
 import requests
 from urllib.parse import quote
 from hashlib import md5
+import time  # <-- This was missing
 
 # Configuration
 API_URL = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=si&dt=t&q="
@@ -33,7 +34,6 @@ def process_xml(input_path, output_path, translations):
         tree = ET.parse(input_path)
         root = tree.getroot()
         
-        # Track processed strings and their translations
         processed_hashes = {}
         translated_count = 0
         duplicate_skips = 0
@@ -42,7 +42,6 @@ def process_xml(input_path, output_path, translations):
         for programme in root.findall('.//programme'):
             channel_id = programme.get('channel', '')
             
-            # Skip specified channels
             if channel_id in SKIP_CHANNELS:
                 if channel_id not in skipped_channels:
                     debug_log(f"Skipping channel: {channel_id}")
@@ -58,11 +57,9 @@ def process_xml(input_path, output_path, translations):
                     duplicate_skips += 1
                 else:
                     original = si_title.text
-                    # First try manual translations
                     if original in translations:
                         si_title.text = translations[original]
                     else:
-                        # Try case-insensitive match
                         original_lower = original.lower()
                         matched = False
                         for key, value in translations.items():
@@ -71,13 +68,12 @@ def process_xml(input_path, output_path, translations):
                                 matched = True
                                 break
                         if not matched:
-                            # Fall back to API
                             try:
                                 encoded_text = quote(original)
                                 response = requests.get(API_URL + encoded_text)
                                 response.raise_for_status()
                                 si_title.text = response.json()[0][0][0]
-                                time.sleep(REQUEST_DELAY)
+                                time.sleep(REQUEST_DELAY)  # <-- Now works with imported time
                             except Exception as e:
                                 debug_log(f"API translation failed: {str(e)}")
                                 si_title.text = original
@@ -86,7 +82,7 @@ def process_xml(input_path, output_path, translations):
                         processed_hashes[text_hash] = si_title.text
                         translated_count += 1
             
-            # Process descriptions (same logic as titles)
+            # Process descriptions
             si_desc = programme.find('desc[@lang="si"]')
             if si_desc is not None and si_desc.text and si_desc.text.strip():
                 text_hash = get_string_hash(si_desc.text)
@@ -120,7 +116,7 @@ def process_xml(input_path, output_path, translations):
                         processed_hashes[text_hash] = si_desc.text
                         translated_count += 1
 
-        debug_log(f"Translated: {translated_count}, Skipped duplicates: {duplicate_skips}, Skipped channels: {len(skipped_channels)}")
+        debug_log(f"Results - Translated: {translated_count}, Duplicates skipped: {duplicate_skips}, Channels skipped: {len(skipped_channels)}")
         
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         tree.write(output_path, encoding='utf-8', xml_declaration=True)
