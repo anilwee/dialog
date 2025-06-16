@@ -4,32 +4,27 @@ on:
   push:
     paths:
       - 'public/lk.xml'
-      - 'translation_mappings.yml'
-      - 'translate_xml.py'
+      - 'translation_mappings.yml'   # root folder
+      - 'translate_xml.py'           # root folder
 
-  workflow_dispatch:  # ✅ Enables manual run from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
   translate-xml:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: pip install pyyaml
+      - run: pip install pyyaml
 
-      - name: Run translation script
-        run: python translate_xml.py
+      - run: python translate_xml.py
 
-      - name: Commit and push changes
-        run: |
+      - run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add public/si.xml
