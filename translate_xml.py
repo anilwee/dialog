@@ -11,12 +11,14 @@ CACHE_FILE = '.translation_cache.json'
 
 def debug_log(message):
     print(f"[DEBUG] {datetime.now().isoformat()} - {message}")
+    with open('translation_debug.log', 'a') as f:
+        f.write(f"{datetime.now().isoformat()} - {message}\n")
 
 def load_cache():
     try:
         with open(CACHE_FILE) as f:
             return json.load(f)
-    except:
+    except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 def save_cache(cache):
@@ -38,8 +40,8 @@ def process_xml(input_path, output_path, translations):
                 continue
             
             # Process titles
-            if (title := programme.find('title[@lang="si"]')) is not None:
-                text_hash = md5(title.text.encode()).hexdigest()
+            if (title := programme.find('title[@lang="si"]')) is not None and title.text:
+                text_hash = md5(title.text.strip().encode()).hexdigest()
                 if text_hash in cache:
                     title.text = cache[text_hash]
                     stats['cached'] += 1
@@ -49,8 +51,8 @@ def process_xml(input_path, output_path, translations):
                     stats['translated'] += 1
             
             # Process descriptions
-            if (desc := programme.find('desc[@lang="si"]')) is not None:
-                text_hash = md5(desc.text.encode()).hexdigest()
+            if (desc := programme.find('desc[@lang="si"]')) is not None and desc.text:
+                text_hash = md5(desc.text.strip().encode()).hexdigest()
                 if text_hash in cache:
                     desc.text = cache[text_hash]
                     stats['cached'] += 1
@@ -71,13 +73,20 @@ def process_xml(input_path, output_path, translations):
         return False
 
 if __name__ == "__main__":
-    translations = yaml.safe_load(open('translation_mappings.yml')) or {}
+    try:
+        translations = yaml.safe_load(open('translation_mappings.yml')) or {}
+    except Exception as e:
+        debug_log(f"Failed to load translations: {str(e)}")
+        translations = {}
+
     input_path = 'public/lk.xml'
     output_path = 'public/si.xml'
     
     if not os.path.exists(input_path):
         debug_log("Creating minimal si.xml")
-        ET.ElementTree(ET.Element('tv')).write(output_path, encoding='utf-8', xml_declaration=True)
+        root = ET.Element('tv')
+        ET.SubElement(root, 'channel', {'id': 'default'})
+        ET.ElementTree(root).write(output_path, encoding='utf-8', xml_declaration=True)
     else:
         success = process_xml(input_path, output_path, translations)
         debug_log(f"Process {'succeeded' if success else 'failed'}")
