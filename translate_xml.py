@@ -1,10 +1,12 @@
 import xml.etree.ElementTree as ET
 import requests
-import os
+import argparse
 from datetime import datetime
 from urllib.parse import quote
 import time
+import os
 
+# Configuration
 API_URL = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=si&dt=t&q="
 REQUEST_DELAY = 0.5
 
@@ -14,6 +16,7 @@ def debug_log(message):
         log.write(f"{datetime.now().isoformat()} - {message}\n")
 
 def translate_text(text):
+    """Translate text to Sinhala while preserving placeholders"""
     if not text or not text.strip():
         return text
     
@@ -25,40 +28,61 @@ def translate_text(text):
         debug_log(f"Translated: '{text}' → '{translated_text}'")
         return translated_text
     except Exception as e:
-        debug_log(f"Translation error for '{text}': {str(e)}")
+        debug_log(f"Translation error: {str(e)}")
         return text
 
-def process_xml(input_path, output_path):
+def process_xml(input_path, output_path, preserve_channels=True):
     try:
-        debug_log(f"Starting processing {input_path}")
+        debug_log(f"Processing {input_path} (Preserve Channels: {preserve_channels})")
         tree = ET.parse(input_path)
         root = tree.getroot()
-        translated_elements = 0
+        translated_count = 0
+
+        # Translate only programme content (title/desc with lang="si")
+        for programme in root.findall('.//programme'):
+            # Title translation
+            si_title = programme.find('title[@lang="si"]')
+            if si_title is not None and si_title.text:
+                original = si_title.text
+                si_title.text = translate_text(original)
+                if si_title.text != original:
+                    translated_count += 1
+            
+            # Description translation
+            si_desc = programme.find('desc[@lang="si"]')
+            if si_desc is not None and si_desc.text:
+                original = si_desc.text
+                si_desc.text = translate_text(original)
+                if si_desc.text != original:
+                    translated_count += 1
+            
+            time.sleep(REQUEST_DELAY)
+
+        debug_log(f"Translated {translated_count} programme elements")
         
-        # EXACT MATCHING OF TARGET ELEMENTS
-        for element in root.findall('.//*[(self::title or self::desc) and @lang="si"]'):
-            if element.text and element.text.strip():
-                original = element.text
-                element.text = translate_text(original)
-                if element.text != original:
-                    translated_elements += 1
-                time.sleep(REQUEST_DELAY)
-        
-        debug_log(f"Translated {translated_elements} elements")
-        
+        # Write output
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         tree.write(output_path, encoding='utf-8', xml_declaration=True)
-        debug_log(f"Successfully wrote {output_path}")
         return True
-        
+
     except Exception as e:
-        debug_log(f"XML processing error: {str(e)}")
+        debug_log(f"Error: {str(e)}")
         return False
 
 if __name__ == "__main__":
-    CONFIG = {
-        'input': 'public/lk.xml',
-        'output': 'public/si.xml'
-    }
-    success = process_xml(CONFIG['input'], CONFIG['output'])
-    debug_log(f"Process {'succeeded' if success else 'failed'}")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', '-i', default='public/lk.xml', help='Input XML file path')
+    parser.add_argument('--output', '-o', default='public/si.xml', help='Output XML file path')
+    parser.add_argument('--preserve-channels', action='store_true', help='Keep channel names untranslated')
+    args = parser.parse_args()
+
+    if not os.path.exists(args.input):
+        debug_log(f"Source file {args.input} not found, generating minimal SI XML")
+        root = ET.Element('tv')
+        channel = ET.SubElement(root, 'channel', {'id': 'default'})
+        ET.SubElement(channel, 'display-name').text = 'Default Channel'
+        ET.SubElement(channel, 'display-name', {'lang': 'si'}).text = 'පෙරනිමි නාලිකාව'
+        ET.ElementTree(root).write(args.output, encoding='utf-8', xml_declaration=True)
+    else:
+        success = process_xml(args.input, args.output, args.preserve_channels)
+        debug_log(f"Process {'completed' if success else 'failed'}")
