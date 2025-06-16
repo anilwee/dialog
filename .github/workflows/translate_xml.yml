@@ -9,74 +9,41 @@ on:
       - 'translation_mappings.yml'
   
   workflow_dispatch:
-    inputs:
-      debug:
-        description: 'Enable debug mode'
-        required: false
-        default: 'false'
-
   schedule:
     - cron: '35 12,13 * * *'
 
 jobs:
   generate-si-xml:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 2  # Strict timeout
 
     steps:
       - uses: actions/checkout@v4
       
-      - name: Verify files exist
-        run: |
-          ls -la public/ || true
-          [ -f "public/lk.xml" ] || echo "::warning::lk.xml not found"
-
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          cache: 'pip'  # Cache dependencies
 
       - name: Install dependencies
-        run: pip install pyyaml requests
+        run: pip install pyyaml
 
-      - name: Run with debug
-        if: github.event.inputs.debug == 'true'
-        run: |
-          python translate_xml.py \
-            --input public/lk.xml \
-            --output public/si.xml \
-            --mappings translation_mappings.yml \
-            --max-api-calls 50  # Reduced for testing
-
-      - name: Run normally
-        if: github.event.inputs.debug != 'true'
-        run: |
-          python translate_xml.py \
-            --input public/lk.xml \
-            --output public/si.xml \
-            --mappings translation_mappings.yml
+      - name: Run translation
+        timeout-minutes: 1  # Hard timeout
+        run: python translate_xml.py
 
       - name: Verify output
         run: |
-          if [ -f "public/si.xml" ]; then
-            echo "::notice::si.xml generated successfully"
-            echo "First 10 lines:"
-            head -n 10 public/si.xml
-          else
-            echo "::error::No si.xml was generated!"
-            echo "Debug log:"
-            cat translation_debug.log || true
-            exit 1
-          fi
+          [ -f "public/si.xml" ] || exit 1
+          echo "Generated file size: $(wc -c < public/si.xml) bytes"
 
-      - name: Commit results
-        if: success() && github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/si.xml translation_cache.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Auto-generated SI XML [skip ci]"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-xml
+          path: |
+            public/si.xml
+            .translation_cache.json
+            translation_debug.log
