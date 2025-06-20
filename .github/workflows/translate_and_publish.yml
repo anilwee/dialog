@@ -1,9 +1,9 @@
 name: Daily XML Translation
 
 on:
-  schedule:
-    - cron: '30 13 * * *'  # 1:30 AM AKL time
-  workflow_dispatch:
+  #schedule:
+   # - cron: '30 13 * * *'  # 1:30 AM AKL time
+ # workflow_dispatch:
   push:
     paths:
       - 'public/lk.xml'
