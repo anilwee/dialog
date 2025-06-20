@@ -5,9 +5,8 @@ from datetime import datetime
 from hashlib import md5
 import json
 import sys
+import re
 
-# Configuration
-SKIP_CHANNELS = {"ART Television", "Vasantham TV", "Nethra TV", "Shakthi TV", "Hi TV"}
 CACHE_FILE = '.translation_cache.json'
 
 def debug_log(message):
@@ -39,6 +38,15 @@ def save_cache(cache):
     with open(CACHE_FILE, 'w') as f:
         json.dump(cache, f)
 
+def apply_partial_translations(text, translations):
+    """Replace all substrings found in translations keys with their corresponding value."""
+    # Build regex alternation for all translation keys (longer keys first)
+    sorted_keys = sorted(translations.keys(), key=len, reverse=True)
+    pattern = re.compile('|'.join(map(re.escape, sorted_keys)))
+    def replacer(match):
+        return translations[match.group(0)]
+    return pattern.sub(replacer, text)
+
 def process_xml():
     translations = load_translations()
     cache = load_cache()
@@ -47,7 +55,6 @@ def process_xml():
     try:
         os.makedirs('public', exist_ok=True)
 
-        # Create minimal XML if source doesn't exist
         if not os.path.exists('public/lk.xml'):
             debug_log("Generating minimal si.xml")
             root = ET.Element('tv')
@@ -59,32 +66,37 @@ def process_xml():
         root = tree.getroot()
 
         for programme in root.findall('.//programme'):
-            channel = programme.get('channel', '')
-            if channel in SKIP_CHANNELS:
-                stats['skipped'] += 1
-                continue
+            # No skipping any channels
 
             # Process titles
-            if (title := programme.find('title[@lang="si"]')) is not None and title.text:
-                text_hash = md5(title.text.strip().encode()).hexdigest()
+            title = programme.find('title[@lang="si"]')
+            if title is not None and title.text:
+                orig_text = title.text.strip()
+                text_hash = md5(orig_text.encode()).hexdigest()
                 if text_hash in cache:
                     title.text = cache[text_hash]
                     stats['cached'] += 1
-                elif title.text in translations:
-                    cache[text_hash] = translations[title.text]
-                    title.text = translations[title.text]
-                    stats['translated'] += 1
+                else:
+                    new_text = apply_partial_translations(orig_text, translations)
+                    if new_text != orig_text:
+                        cache[text_hash] = new_text
+                        title.text = new_text
+                        stats['translated'] += 1
 
             # Process descriptions
-            if (desc := programme.find('desc[@lang="si"]')) is not None and desc.text:
-                text_hash = md5(desc.text.strip().encode()).hexdigest()
+            desc = programme.find('desc[@lang="si"]')
+            if desc is not None and desc.text:
+                orig_text = desc.text.strip()
+                text_hash = md5(orig_text.encode()).hexdigest()
                 if text_hash in cache:
                     desc.text = cache[text_hash]
                     stats['cached'] += 1
-                elif desc.text in translations:
-                    cache[text_hash] = translations[desc.text]
-                    desc.text = translations[desc.text]
-                    stats['translated'] += 1
+                else:
+                    new_text = apply_partial_translations(orig_text, translations)
+                    if new_text != orig_text:
+                        cache[text_hash] = new_text
+                        desc.text = new_text
+                        stats['translated'] += 1
 
         save_cache(cache)
         debug_log(f"Translation stats: {stats}")
