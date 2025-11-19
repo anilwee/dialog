@@ -20,100 +20,52 @@ jobs:
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
         chmod 600 /tmp/vpn_config/*
 
-    - name: Install OpenVPN and tools
+    - name: Install OpenVPN
       run: |
         sudo apt-get update
-        sudo apt-get install -y openvpn curl wget
+        sudo apt-get install -y openvpn
 
     - name: Connect VPN
       run: |
         cd /tmp/vpn_config
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 25
-        echo "=== VPN Connection Status ==="
-        ip addr show tun0 && echo "✅ VPN tunnel established" || echo "❌ VPN tunnel failed"
+        sleep 20
+        echo "VPN connected"
 
-    - name: Check VPN IP
+    - name: Download EPG Files
+      id: download
       run: |
-        echo "=== Current Public IP ==="
-        curl -s --max-time 10 https://ipinfo.io/ip || echo "Could not determine IP"
-
-    - name: Download EPG Files with Advanced Headers
-      run: |
-        echo "=== Attempting download with realistic browser headers ==="
-        
-        # Method 1: curl with full browser headers
-        if curl -L -o epg.xml.gz \
-          -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" \
-          -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8" \
-          -H "Accept-Language: en-US,en;q=0.9" \
-          -H "Accept-Encoding: gzip, deflate, br" \
-          -H "DNT: 1" \
-          -H "Connection: keep-alive" \
-          -H "Upgrade-Insecure-Requests: 1" \
-          -H "Sec-Fetch-Dest: document" \
-          -H "Sec-Fetch-Mode: navigate" \
-          -H "Sec-Fetch-Site: none" \
-          -H "Cache-Control: max-age=0" \
-          https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-          echo "✅ Download successful with curl headers"
-          
-        # Method 2: wget with referer and cookies
-        elif wget -O epg.xml.gz \
-          --header="User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" \
-          --header="Referer: https://watch.livecricketsl.xyz/" \
-          --header="Accept: */*" \
-          https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-          echo "✅ Download successful with wget headers"
-          
-        # Method 3: Try without VPN (if VPN IP is blocked)
+        if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          gunzip -c epg.xml.gz > epg.xml
+          echo "download_success=true" >> $GITHUB_OUTPUT
         else
-          echo "❌ VPN download failed, trying without VPN..."
-          sudo pkill openvpn
-          sleep 10
-          if curl -L -o epg.xml.gz \
-            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" \
-            https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-            echo "✅ Download successful without VPN"
-          else
-            echo "❌ All download attempts failed"
-            exit 1
-          fi
+          echo "download_success=false" >> $GITHUB_OUTPUT
+          exit 1
         fi
-        
-        # Extract the file
-        gunzip -c epg.xml.gz > epg.xml
-        echo "✅ File extracted successfully"
-
-    - name: Verify Downloaded Files
-      run: |
-        echo "=== Verifying downloaded files ==="
-        ls -la epg.xml epg.xml.gz
-        echo "File size: $(wc -c < epg.xml.gz) bytes"
-        file epg.xml.gz || echo "Cannot check file type"
 
     - name: Update Public Files
+      if: steps.download.outputs.download_success == 'true'
       run: |
         mkdir -p public
         rm -f public/epg.xml public/epg.xml.gz
         mv epg.xml epg.xml.gz public/
-        echo "✅ Files moved to public directory"
 
-    - name: Commit and Push
+    - name: Commit and Push Changes
+      if: steps.download.outputs.download_success == 'true'
       run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-        git add public/
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add public/epg.xml public/epg.xml.gz
+        if [ -n "$(git status --porcelain -- public/)" ]; then
           git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
-          git push
-          echo "✅ Changes pushed successfully"
+          git pull --rebase origin main
+          git push origin main
+          echo "Changes pushed successfully"
+        else
+          echo "No changes in EPG files to commit"
         fi
 
     - name: Cleanup
       run: |
         sudo pkill openvpn || true
         rm -rf /tmp/vpn_config
-        echo "✅ Cleanup completed"
