@@ -16,43 +16,78 @@ jobs:
     - name: Setup VPN Config
       run: |
         mkdir -p /tmp/vpn_config
-        
-        # Simply decode the OVPN_FILE - it should contain the complete config
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
-        
-        # Create auth file
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
-        
         chmod 600 /tmp/vpn_config/*
 
-    - name: Install OpenVPN
-      run: sudo apt-get update && sudo apt-get install -y openvpn
+    - name: Install OpenVPN and tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openvpn wget curl
 
     - name: Connect VPN
       run: |
         cd /tmp/vpn_config
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 20
+        sleep 25
+        echo "=== VPN Connection Status ==="
+        ip addr show tun0 && echo "✅ VPN tunnel established" || echo "❌ VPN tunnel failed"
 
-    - name: Download EPG Files
+    - name: Check VPN IP
       run: |
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+        echo "=== Current Public IP ==="
+        curl -s --max-time 10 https://ipinfo.io/ip || echo "Could not determine IP"
+
+    - name: Download EPG Files via VPN
+      run: |
+        echo "=== Attempting download through VPN ==="
+        # Try multiple user agents to avoid blocking
+        if wget -O epg.xml.gz --header="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          echo "✅ Download successful with Windows user agent"
+        elif wget -O epg.xml.gz --header="User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          echo "✅ Download successful with Linux user agent"
+        elif wget -O epg.xml.gz --header="User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          echo "✅ Download successful with Mac user agent"
+        else
+          echo "❌ All download attempts failed through VPN"
+          exit 1
+        fi
+        
+        # Extract the file
         gunzip -c epg.xml.gz > epg.xml
+        echo "✅ File extracted successfully"
+
+    - name: Verify Downloaded Files
+      run: |
+        echo "=== Verifying downloaded files ==="
+        ls -la epg.xml epg.xml.gz
+        file epg.xml.gz || echo "Cannot check file type"
+        echo "=== First 100 characters of XML ==="
+        head -c 100 epg.xml || echo "Cannot read XML file"
 
     - name: Update Public Files
       run: |
         mkdir -p public
+        rm -f public/epg.xml public/epg.xml.gz
         mv epg.xml epg.xml.gz public/
+        echo "=== Files in public directory ==="
+        ls -la public/
 
     - name: Commit and Push
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
         git add public/
-        git commit -m "Update EPG files" || echo "No changes to commit"
-        git push
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git push
+          echo "✅ Changes pushed successfully"
+        fi
 
     - name: Cleanup
       run: |
         sudo pkill openvpn || true
         rm -rf /tmp/vpn_config
+        echo "✅ Cleanup completed"
