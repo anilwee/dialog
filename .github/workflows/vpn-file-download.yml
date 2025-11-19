@@ -24,46 +24,103 @@ jobs:
       run: |
         # Create VPN files outside of workspace to avoid git detection
         mkdir -p /tmp/vpn_config
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/raw_config.ovpn
-        fold -w 64 /tmp/vpn_config/raw_config.ovpn > /tmp/vpn_config/config.ovpn
+        
+        # Decode all certificate files from secrets
+        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
+        echo "${{ secrets.OVPN_CA }}" | base64 -d > /tmp/vpn_config/ca.crt
+        echo "${{ secrets.OVPN_TLS_AUTH }}" | base64 -d > /tmp/vpn_config/ta.key
+        
+        # Add compression fix to avoid warnings
+        echo "allow-compression yes" >> /tmp/vpn_config/config.ovpn
+        
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
-        chmod 600 /tmp/vpn_config/auth.txt
+        chmod 600 /tmp/vpn_config/auth.txt /tmp/vpn_config/ca.crt /tmp/vpn_config/ta.key
 
-    - name: Install and Connect VPN
+    - name: Debug VPN Configuration
+      run: |
+        echo "=== Checking VPN files ==="
+        ls -la /tmp/vpn_config/
+        echo "=== Config file first 10 lines ==="
+        head -10 /tmp/vpn_config/config.ovpn
+        echo "=== Certificate files exist ==="
+        [ -f /tmp/vpn_config/ca.crt ] && echo "✅ ca.crt exists" || echo "❌ ca.crt missing"
+        [ -f /tmp/vpn_config/ta.key ] && echo "✅ ta.key exists" || echo "❌ ta.key missing"
+        [ -f /tmp/vpn_config/auth.txt ] && echo "✅ auth.txt exists" || echo "❌ auth.txt missing"
+
+    - name: Install OpenVPN
       run: |
         sudo apt-get update && sudo apt-get install -y openvpn
+
+    - name: Test VPN Connection
+      run: |
+        echo "=== Testing OpenVPN connection ==="
+        # Run OpenVPN in foreground with timeout to see real errors
+        timeout 60s sudo openvpn --config /tmp/vpn_config/config.ovpn --auth-user-pass /tmp/vpn_config/auth.txt --verb 3 --connect-retry 3 --connect-timeout 30
+        
+        # Check exit code
+        EXIT_CODE=$?
+        echo "OpenVPN exited with code: $EXIT_CODE"
+        
+        if [ $EXIT_CODE -eq 0 ]; then
+          echo "✅ OpenVPN connected successfully"
+        elif [ $EXIT_CODE -eq 124 ]; then
+          echo "⚠️ OpenVPN timed out (connection in progress)"
+          # Check if tun0 interface exists
+          ip addr show tun0 && echo "✅ tun0 interface exists" || echo "❌ No tun0 interface"
+        else
+          echo "❌ OpenVPN failed with error code: $EXIT_CODE"
+          echo "=== Checking logs ==="
+          sudo journalctl -u openvpn --no-pager -n 20 2>/dev/null || echo "No journal entries"
+          exit 1
+        fi
+
+    - name: Connect VPN for Download
+      run: |
+        echo "=== Starting VPN for download ==="
         sudo openvpn --config /tmp/vpn_config/config.ovpn --auth-user-pass /tmp/vpn_config/auth.txt --daemon
-        sleep 20
-        echo "VPN IP: $(curl -s --max-time 10 https://ipinfo.io/ip)"
+        sleep 30
+        
+        echo "=== Checking VPN status ==="
+        ip addr show tun0 && echo "✅ VPN tunnel established" || echo "❌ No VPN tunnel"
+        
+        echo "=== Testing connectivity ==="
+        curl -s --max-time 10 https://ipinfo.io/ip && echo " - Internet accessible"
 
     - name: Download EPG Files
       id: download
       run: |
+        echo "=== Attempting download ==="
         if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
           gunzip -c epg.xml.gz > epg.xml
           echo "download_success=true" >> $GITHUB_OUTPUT
+          echo "✅ Download successful"
         else
           echo "download_success=false" >> $GITHUB_OUTPUT
-          exit 1
+          echo "❌ Download failed through VPN, trying without VPN..."
+          sudo pkill openvpn || true
+          sleep 5
+          if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+            gunzip -c epg.xml.gz > epg.xml
+            echo "download_success=true" >> $GITHUB_OUTPUT
+            echo "✅ Download successful without VPN"
+          else
+            echo "❌ Download failed completely"
+            exit 1
+          fi
         fi
 
     - name: Update Public Files
       if: steps.download.outputs.download_success == 'true'
       run: |
         mkdir -p public
-        # Force remove existing files
         rm -f public/epg.xml public/epg.xml.gz || true
-        # Move new files and set permissions
         mv epg.xml epg.xml.gz public/
         chmod 644 public/*
 
     - name: Commit and Push Changes
       if: steps.download.outputs.download_success == 'true'
       run: |
-        # Explicitly add only the files we want to track
         git add public/epg.xml public/epg.xml.gz
-        
-        # Check if there are changes to commit
         if [ -n "$(git status --porcelain -- public/)" ]; then
           git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
           git pull --rebase origin main
@@ -79,3 +136,4 @@ jobs:
       run: |
         sudo pkill openvpn || true
         rm -rf /tmp/vpn_config
+        echo "Cleanup completed"
