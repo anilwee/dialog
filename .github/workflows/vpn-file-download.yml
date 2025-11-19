@@ -26,12 +26,15 @@ jobs:
         mkdir -p /tmp/vpn_config
         
         # Decode all certificate files from secrets
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
+        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/original_config.ovpn
         echo "${{ secrets.OVPN_CA }}" | base64 -d > /tmp/vpn_config/ca.crt
         echo "${{ secrets.OVPN_TLS_AUTH }}" | base64 -d > /tmp/vpn_config/ta.key
         
-        # Add compression fix to avoid warnings
-        echo "allow-compression yes" >> /tmp/vpn_config/config.ovpn
+        # Fix compression settings in the config file
+        sed -e 's/allow-compression no/allow-compression yes/g' \
+            -e 's/comp-lzo no/comp-lzo yes/g' \
+            -e '/comp-lzo$/s/$/ yes/' \
+            /tmp/vpn_config/original_config.ovpn > /tmp/vpn_config/config.ovpn
         
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
         chmod 600 /tmp/vpn_config/auth.txt /tmp/vpn_config/ca.crt /tmp/vpn_config/ta.key
@@ -40,12 +43,11 @@ jobs:
       run: |
         echo "=== Checking VPN files ==="
         ls -la /tmp/vpn_config/
-        echo "=== Config file first 10 lines ==="
-        head -10 /tmp/vpn_config/config.ovpn
+        echo "=== Config file compression settings ==="
+        grep -i "compression\|comp-lzo\|allow-compression" /tmp/vpn_config/config.ovpn || echo "No compression settings found"
         echo "=== Certificate files exist ==="
         [ -f /tmp/vpn_config/ca.crt ] && echo "✅ ca.crt exists" || echo "❌ ca.crt missing"
         [ -f /tmp/vpn_config/ta.key ] && echo "✅ ta.key exists" || echo "❌ ta.key missing"
-        [ -f /tmp/vpn_config/auth.txt ] && echo "✅ auth.txt exists" || echo "❌ auth.txt missing"
 
     - name: Install OpenVPN
       run: |
@@ -65,12 +67,9 @@ jobs:
           echo "✅ OpenVPN connected successfully"
         elif [ $EXIT_CODE -eq 124 ]; then
           echo "⚠️ OpenVPN timed out (connection in progress)"
-          # Check if tun0 interface exists
           ip addr show tun0 && echo "✅ tun0 interface exists" || echo "❌ No tun0 interface"
         else
           echo "❌ OpenVPN failed with error code: $EXIT_CODE"
-          echo "=== Checking logs ==="
-          sudo journalctl -u openvpn --no-pager -n 20 2>/dev/null || echo "No journal entries"
           exit 1
         fi
 
@@ -82,9 +81,6 @@ jobs:
         
         echo "=== Checking VPN status ==="
         ip addr show tun0 && echo "✅ VPN tunnel established" || echo "❌ No VPN tunnel"
-        
-        echo "=== Testing connectivity ==="
-        curl -s --max-time 10 https://ipinfo.io/ip && echo " - Internet accessible"
 
     - name: Download EPG Files
       id: download
