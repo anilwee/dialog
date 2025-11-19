@@ -16,9 +16,13 @@ jobs:
     - name: Setup VPN Config
       run: |
         mkdir -p /tmp/vpn_config
-        # Just decode the OVPN_FILE - use it as-is
+        
+        # Simply decode the OVPN_FILE - it should contain the complete config
         echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
+        
+        # Create auth file
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
+        
         chmod 600 /tmp/vpn_config/*
 
     - name: Install OpenVPN
