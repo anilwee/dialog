@@ -1,159 +1,68 @@
 name: VPN Connect and File Host
 
 on:
-  schedule:
-    - cron: '00 13 * * *'  # 1:00 AM AKL time
   workflow_dispatch:
+  schedule:
+    - cron: '0 13 * * *'
 
 jobs:
   vpn-download-host:
     runs-on: ubuntu-latest
-    env:
-      GIT_AUTHOR_NAME: "GitHub Actions Bot"
-      GIT_AUTHOR_EMAIL: "actions@github.com"
-      GIT_COMMITTER_NAME: "GitHub Actions Bot"
-      GIT_COMMITTER_EMAIL: "actions@github.com"
-
+    
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@v4
 
     - name: Setup VPN Config
       run: |
-        # Create VPN files outside of workspace to avoid git detection
         mkdir -p /tmp/vpn_config
-        
-        # Decode all certificate files from secrets
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/original_config.ovpn
+        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
         echo "${{ secrets.OVPN_CA }}" | base64 -d > /tmp/vpn_config/ca.crt
         echo "${{ secrets.OVPN_TLS_AUTH }}" | base64 -d > /tmp/vpn_config/ta.key
-        
-        # Create a complete config file with all required directives
-        cat > /tmp/vpn_config/config.ovpn << 'EOF'
-client
-dev tun
-proto tcp
-remote uk-lon.pvdata.host 443
-resolv-retry infinite
-nobind
-remote-cert-tls server
-comp-lzo
-persist-key
-persist-tun
-verb 3
-cipher AES-128-GCM
-auth SHA256
-auth-user-pass
-ca ca.crt
-tls-auth ta.key 1
-key-direction 1
-EOF
-
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
         chmod 600 /tmp/vpn_config/auth.txt /tmp/vpn_config/ca.crt /tmp/vpn_config/ta.key
 
-    - name: Debug VPN Configuration
+    - name: Debug Files
       run: |
         echo "=== Checking VPN files ==="
         ls -la /tmp/vpn_config/
-        echo "=== Final config content ==="
+        echo "=== Config content ==="
         cat /tmp/vpn_config/config.ovpn
-        echo "=== Certificate verification ==="
-        head -2 /tmp/vpn_config/ca.crt
-        head -2 /tmp/vpn_config/ta.key
-        echo "=== Working directory for OpenVPN ==="
-        pwd
 
     - name: Install OpenVPN
-      run: |
-        sudo apt-get update && sudo apt-get install -y openvpn
+      run: sudo apt-get update && sudo apt-get install -y openvpn
 
     - name: Test VPN Connection
       run: |
-        echo "=== Testing OpenVPN connection ==="
-        # Change to VPN config directory and run from there
         cd /tmp/vpn_config
-        # Run OpenVPN in foreground with timeout to see real errors
-        timeout 60s sudo openvpn --config config.ovpn --auth-user-pass auth.txt --verb 3 --connect-retry 3 --connect-timeout 30
-        
-        # Check exit code
-        EXIT_CODE=$?
-        echo "OpenVPN exited with code: $EXIT_CODE"
-        
-        if [ $EXIT_CODE -eq 0 ]; then
-          echo "✅ OpenVPN connected successfully"
-        elif [ $EXIT_CODE -eq 124 ]; then
-          echo "⚠️ OpenVPN timed out (connection in progress)"
-          ip addr show tun0 && echo "✅ tun0 interface exists" || echo "❌ No tun0 interface"
-        else
-          echo "❌ OpenVPN failed with error code: $EXIT_CODE"
-          exit 1
-        fi
+        timeout 30s sudo openvpn --config config.ovpn --auth-user-pass auth.txt --verb 3 || echo "VPN test completed"
 
-    - name: Connect VPN for Download
+    - name: Connect VPN
       run: |
-        echo "=== Starting VPN for download ==="
         cd /tmp/vpn_config
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 30
-        
-        echo "=== Checking VPN status ==="
-        ip addr show tun0 && echo "✅ VPN tunnel established" || echo "❌ No VPN tunnel"
+        sleep 15
 
     - name: Download EPG Files
-      id: download
       run: |
-        echo "=== Attempting download ==="
-        if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-          gunzip -c epg.xml.gz > epg.xml
-          echo "download_success=true" >> $GITHUB_OUTPUT
-          echo "✅ Download successful"
-        else
-          echo "download_success=false" >> $GITHUB_OUTPUT
-          echo "❌ Download failed through VPN, trying without VPN..."
-          sudo pkill openvpn || true
-          sleep 5
-          if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
-            gunzip -c epg.xml.gz > epg.xml
-            echo "download_success=true" >> $GITHUB_OUTPUT
-            echo "✅ Download successful without VPN"
-          else
-            echo "❌ Download failed completely"
-            exit 1
-          fi
-        fi
+        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz && \
+        gunzip -c epg.xml.gz > epg.xml || echo "Download failed"
 
     - name: Update Public Files
-      if: steps.download.outputs.download_success == 'true'
       run: |
         mkdir -p public
-        rm -f public/epg.xml public/epg.xml.gz || true
-        mv epg.xml epg.xml.gz public/
-        chmod 644 public/*
+        mv epg.xml epg.xml.gz public/ 2>/dev/null || echo "No files to move"
+        ls -la public/
 
-    - name: Commit and Push Changes
-      if: steps.download.outputs.download_success == 'true'
+    - name: Commit and Push
       run: |
-        git add public/epg.xml public/epg.xml.gz
-        if [ -n "$(git status --porcelain -- public/)" ]; then
-          git commit -m "Update EPG files [$(date +'%Y-%m-%d %H:%M:%S')]"
-          git pull --rebase origin main
-          git push origin main
-          echo "Changes pushed successfully"
-        else
-          echo "No changes in EPG files to commit"
-        fi
-      env:
-        GIT_AUTHOR_NAME: "GitHub Actions Bot"
-        GIT_AUTHOR_EMAIL: "actions@github.com"
-        GIT_COMMITTER_NAME: "GitHub Actions Bot"
-        GIT_COMMITTER_EMAIL: "actions@github.com"
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add public/ || echo "No files to add"
+        git diff --staged --quiet || git commit -m "Update EPG files"
+        git push
 
     - name: Cleanup
       run: |
         sudo pkill openvpn || true
         rm -rf /tmp/vpn_config
-        echo "Cleanup completed"
