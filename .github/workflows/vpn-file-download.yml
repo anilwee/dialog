@@ -16,49 +16,83 @@ jobs:
     - name: Setup VPN Config
       run: |
         mkdir -p /tmp/vpn_config
-        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/config.ovpn
+        
+        # Decode the base64 files
+        echo "${{ secrets.OVPN_FILE }}" | base64 -d > /tmp/vpn_config/original.ovpn
         echo "${{ secrets.OVPN_CA }}" | base64 -d > /tmp/vpn_config/ca.crt
         echo "${{ secrets.OVPN_TLS_AUTH }}" | base64 -d > /tmp/vpn_config/ta.key
+        
+        # Create a complete config file with ALL required directives
+        cat > /tmp/vpn_config/config.ovpn << 'EOF'
+client
+dev tun
+proto tcp
+remote uk-lon.pvdata.host 443
+resolv-retry infinite
+nobind
+remote-cert-tls server
+comp-lzo
+persist-key
+persist-tun
+verb 3
+cipher AES-128-GCM
+auth SHA256
+auth-user-pass
+ca ca.crt
+tls-auth ta.key 1
+key-direction 1
+EOF
+
         printf "%s\n" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_config/auth.txt
-        chmod 600 /tmp/vpn_config/auth.txt /tmp/vpn_config/ca.crt /tmp/vpn_config/ta.key
+        chmod 600 /tmp/vpn_config/*
 
     - name: Debug Files
       run: |
-        echo "=== Checking VPN files ==="
+        echo "=== VPN files ==="
         ls -la /tmp/vpn_config/
         echo "=== Config content ==="
         cat /tmp/vpn_config/config.ovpn
+        echo "=== Certificate check ==="
+        head -2 /tmp/vpn_config/ca.crt
+        head -2 /tmp/vpn_config/ta.key
 
     - name: Install OpenVPN
       run: sudo apt-get update && sudo apt-get install -y openvpn
-
-    - name: Test VPN Connection
-      run: |
-        cd /tmp/vpn_config
-        timeout 30s sudo openvpn --config config.ovpn --auth-user-pass auth.txt --verb 3 || echo "VPN test completed"
 
     - name: Connect VPN
       run: |
         cd /tmp/vpn_config
         sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-        sleep 15
+        sleep 20
+        echo "=== Checking VPN connection ==="
+        ip addr show tun0 && echo "✅ VPN connected" || echo "❌ VPN failed"
 
     - name: Download EPG Files
       run: |
-        wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz && \
-        gunzip -c epg.xml.gz > epg.xml || echo "Download failed"
+        echo "=== Testing download ==="
+        if wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz; then
+          gunzip -c epg.xml.gz > epg.xml
+          echo "✅ Download successful"
+        else
+          echo "❌ Download failed, trying without VPN..."
+          sudo pkill openvpn
+          sleep 5
+          wget -O epg.xml.gz https://watch.livecricketsl.xyz/epg/epg.xml.gz
+          gunzip -c epg.xml.gz > epg.xml
+        fi
 
     - name: Update Public Files
       run: |
         mkdir -p public
-        mv epg.xml epg.xml.gz public/ 2>/dev/null || echo "No files to move"
+        rm -f public/epg.xml public/epg.xml.gz
+        mv epg.xml epg.xml.gz public/ 2>/dev/null || echo "Files moved"
         ls -la public/
 
     - name: Commit and Push
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
-        git add public/ || echo "No files to add"
+        git add public/
         git diff --staged --quiet || git commit -m "Update EPG files"
         git push
 
