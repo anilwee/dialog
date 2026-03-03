@@ -1,19 +1,5 @@
-# Ignore OpenVPN config file
-LK.ovpn
-
-# Ignore authentication files
-auth.txt
-*.auth
-
-# Ignore secrets and environment configuration
-*.env
-secrets/
-*.key
-*.pem
-
-# Ignore system files
-.DS_Store
-Thumbs.db
-
-# Ignore debug_invalid_xml.xml
-debug_invalid_xml.xml
+# Ignore sensitive files
+.config/
+*.log
+*.gz
+download-error.log
