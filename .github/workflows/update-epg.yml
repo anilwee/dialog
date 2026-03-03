@@ -2,9 +2,8 @@ name: Update EPG File
 
 on:
   schedule:
-    # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
-  workflow_dispatch:  # Allow manual triggers
+  workflow_dispatch:
 
 jobs:
   update-epg:
@@ -14,107 +13,211 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install NordVPN
+      - name: Install NordVPN and setup permissions
         run: |
           # Download and run the NordVPN installation script
           curl -s https://downloads.nordcdn.com/apps/linux/install.sh | sudo bash -s -- -p nordvpn-gui
           
           # Wait for installation to complete
           sleep 5
-
-      - name: Configure NordVPN credentials
-        run: |
-          # Create directory for NordVPN config if it doesn't exist
+          
+          # Create nordvpn group if it doesn't exist
+          sudo groupadd -f nordvpn
+          
+          # Add current user to nordvpn group
+          sudo usermod -aG nordvpn $USER
+          
+          # Verify group membership
+          groups $USER
+          
+          # Fix permissions for NordVPN directories
+          sudo chmod 755 /var/run/nordvpn
+          sudo chown -R :nordvpn /var/run/nordvpn 2>/dev/null || true
+          
+          # Create config directory with proper permissions
           mkdir -p ~/.config/nordvpn
+          chmod 700 ~/.config/nordvpn
+
+      - name: Install expect for automation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y expect
+
+      - name: Login to NordVPN
+        run: |
+          # Create a login script to handle the group permissions
+          cat > login_nordvpn.sh << 'EOF'
+          #!/usr/bin/expect -f
           
-          # Store credentials from GitHub Secrets
-          echo "${{ secrets.NORDVPN_USERNAME }}" > ~/.config/nordvpn/username
-          echo "${{ secrets.NORDVPN_PASSWORD }}" > ~/.config/nordvpn/password
+          set timeout 30
+          set username [lindex $argv 0]
+          set password [lindex $argv 1]
           
-          # Login to NordVPN (using expect to handle interactive prompts)
-          sudo apt-get update && sudo apt-get install -y expect
+          # Try login with retry mechanism
+          for {set i 0} {$i < 3} {incr i} {
+            spawn sudo -u $env(USER) nordvpn login
+            expect {
+              "Email/Username:" {
+                send "$username\r"
+                exp_continue
+              }
+              "Password:" {
+                send "$password\r"
+                exp_continue
+              }
+              "You are already logged in" {
+                puts "Already logged in"
+                exit 0
+              }
+              "Welcome to NordVPN" {
+                puts "Login successful"
+                exit 0
+              }
+              "Permission denied" {
+                puts "Permission issue, retrying..."
+                sleep 5
+                continue
+              }
+              timeout {
+                puts "Timeout, retrying..."
+                sleep 5
+                continue
+              }
+            }
+          }
+          puts "Failed to login after 3 attempts"
+          exit 1
+          EOF
           
-          # Auto-login with credentials
+          chmod +x login_nordvpn.sh
+          
+          # Run the login script
+          ./login_nordvpn.sh "${{ secrets.NORDVPN_USERNAME }}" "${{ secrets.NORDVPN_PASSWORD }}"
+
+      - name: Alternative login method (if above fails)
+        if: failure()
+        run: |
+          echo "Trying alternative login method..."
+          
+          # Method 2: Use token-based login if available
+          # You might need to generate a token from NordVPN account
+          # nordvpn login --token ${{ secrets.NORDVPN_TOKEN }}
+          
+          # Method 3: Manual login with expect and full sudo
           expect << EOF
-          spawn nordvpn login
-          expect "Email / Username:"
+          spawn sudo nordvpn login
+          expect "Email/Username:"
           send "${{ secrets.NORDVPN_USERNAME }}\r"
           expect "Password:"
           send "${{ secrets.NORDVPN_PASSWORD }}\r"
           expect eof
           EOF
 
+      - name: Verify login status
+        run: |
+          # Check login status
+          nordvpn account || sudo nordvpn account
+          
+          # If still not logged in, try with sudo
+          if [ $? -ne 0 ]; then
+            sudo nordvpn account
+          fi
+
       - name: Connect to Singapore server
         run: |
-          # Connect to Singapore server
-          nordvpn connect Singapore
+          # Try to connect with appropriate permissions
+          echo "Connecting to Singapore..."
           
-          # Wait for connection to establish
-          sleep 10
+          # First attempt with sudo
+          sudo nordvpn connect Singapore || \
+          # Second attempt without sudo
+          nordvpn connect Singapore || \
+          # Third attempt with specific server
+          sudo nordvpn connect sg142 || \
+          # Final attempt - just connect to any server
+          sudo nordvpn connect
           
-          # Verify connection
-          nordvpn status
+          # Wait for connection
+          sleep 15
+          
+          # Show connection status
+          sudo nordvpn status || nordvpn status
 
       - name: Download EPG file
         id: download
         run: |
-          # Create public directory if it doesn't exist
+          # Create public directory
           mkdir -p public
           
-          # Try multiple download methods with proper headers
+          # Try multiple download methods
           echo "Attempting to download EPG file..."
           
-          # Method 1: wget with browser-like headers
-          wget --no-check-certificate \
-               --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" \
-               --header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" \
-               --header="Accept-Language: en-US,en;q=0.5" \
-               --header="Referer: https://watch.livecricketsl.xyz/" \
+          # Method 1: wget with browser headers and retry
+          wget --retry-connrefused --waitretry=5 --timeout=30 --tries=5 \
+               --no-check-certificate \
+               --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+               --header="Accept: application/xml,application/x-gzip,application/octet-stream" \
+               --header="Accept-Language: en-US,en;q=0.9" \
                -O public/epg.xml.gz \
                https://watch.livecricketsl.xyz/epg/epg.xml.gz || \
-          # Method 2: curl as fallback
-          curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+          # Method 2: curl with cookies
+          curl -L -v -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+               -H "Accept: application/xml,application/x-gzip" \
                -H "Referer: https://watch.livecricketsl.xyz/" \
+               --retry 5 \
+               --retry-delay 5 \
                -o public/epg.xml.gz \
-               https://watch.livecricketsl.xyz/epg/epg.xml.gz || \
-          # Method 3: Create placeholder file if download fails
-          echo "Download failed - check URL or access permissions" > public/download-error.log
+               https://watch.livecricketsl.xyz/epg/epg.xml.gz
           
-          # Check if file was downloaded and extract it
+          # Check download result
           if [ -f public/epg.xml.gz ] && [ -s public/epg.xml.gz ]; then
-            echo "File downloaded successfully, extracting..."
-            gunzip -f public/epg.xml.gz
+            echo "✅ File downloaded successfully ($(du -h public/epg.xml.gz | cut -f1))"
             echo "status=success" >> $GITHUB_OUTPUT
+            
+            # Extract the file
+            gunzip -f public/epg.xml.gz
+            echo "✅ File extracted to epg.xml"
           else
+            echo "❌ Download failed (403 Forbidden)"
             echo "status=failed" >> $GITHUB_OUTPUT
-            # Create a note about the 403 error
-            echo "{\"error\": \"403 Forbidden - Access denied to the EPG URL\", \"timestamp\": \"$(date -Iseconds)\"}" > public/epg-status.json
+            # Create status file
+            cat > public/epg-status.json << EOF
+            {
+              "error": "403 Forbidden - Access denied",
+              "timestamp": "$(date -Iseconds)",
+              "url": "https://watch.livecricketsl.xyz/epg/epg.xml.gz",
+              "vpn_status": "$(sudo nordvpn status 2>/dev/null | head -1 || echo 'VPN not connected')"
+            }
+            EOF
           fi
+
+      - name: Disconnect VPN and cleanup
+        if: always()
+        run: |
+          # Disconnect VPN
+          sudo nordvpn disconnect || nordvpn disconnect
+          
+          # Logout
+          sudo nordvpn logout || nordvpn logout
+          
+          # Clean up login script
+          rm -f login_nordvpn.sh
 
       - name: Commit and push changes
         run: |
-          # Configure git
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # Add the public folder
           git add public/
           
-          # Commit if there are changes
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update EPG file - $(date +'%Y-%m-%d')"
+            git commit -m "Update EPG file - $(date +'%Y-%m-%d %H:%M')"
             git push
           fi
 
-      - name: Disconnect NordVPN
-        if: always()  # Always run this step, even if previous steps fail
-        run: |
-          nordvpn disconnect
-          nordvpn logout
-
-      - name: Upload EPG file as artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: epg-files
