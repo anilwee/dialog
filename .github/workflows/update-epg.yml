@@ -1,0 +1,122 @@
+name: Update EPG File
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  update-epg:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install NordVPN
+        run: |
+          # Download and run the NordVPN installation script
+          curl -s https://downloads.nordcdn.com/apps/linux/install.sh | sudo bash -s -- -p nordvpn-gui
+          
+          # Wait for installation to complete
+          sleep 5
+
+      - name: Configure NordVPN credentials
+        run: |
+          # Create directory for NordVPN config if it doesn't exist
+          mkdir -p ~/.config/nordvpn
+          
+          # Store credentials from GitHub Secrets
+          echo "${{ secrets.NORDVPN_USERNAME }}" > ~/.config/nordvpn/username
+          echo "${{ secrets.NORDVPN_PASSWORD }}" > ~/.config/nordvpn/password
+          
+          # Login to NordVPN (using expect to handle interactive prompts)
+          sudo apt-get update && sudo apt-get install -y expect
+          
+          # Auto-login with credentials
+          expect << EOF
+          spawn nordvpn login
+          expect "Email / Username:"
+          send "${{ secrets.NORDVPN_USERNAME }}\r"
+          expect "Password:"
+          send "${{ secrets.NORDVPN_PASSWORD }}\r"
+          expect eof
+          EOF
+
+      - name: Connect to Singapore server
+        run: |
+          # Connect to Singapore server
+          nordvpn connect Singapore
+          
+          # Wait for connection to establish
+          sleep 10
+          
+          # Verify connection
+          nordvpn status
+
+      - name: Download EPG file
+        id: download
+        run: |
+          # Create public directory if it doesn't exist
+          mkdir -p public
+          
+          # Try multiple download methods with proper headers
+          echo "Attempting to download EPG file..."
+          
+          # Method 1: wget with browser-like headers
+          wget --no-check-certificate \
+               --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" \
+               --header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" \
+               --header="Accept-Language: en-US,en;q=0.5" \
+               --header="Referer: https://watch.livecricketsl.xyz/" \
+               -O public/epg.xml.gz \
+               https://watch.livecricketsl.xyz/epg/epg.xml.gz || \
+          # Method 2: curl as fallback
+          curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+               -H "Referer: https://watch.livecricketsl.xyz/" \
+               -o public/epg.xml.gz \
+               https://watch.livecricketsl.xyz/epg/epg.xml.gz || \
+          # Method 3: Create placeholder file if download fails
+          echo "Download failed - check URL or access permissions" > public/download-error.log
+          
+          # Check if file was downloaded and extract it
+          if [ -f public/epg.xml.gz ] && [ -s public/epg.xml.gz ]; then
+            echo "File downloaded successfully, extracting..."
+            gunzip -f public/epg.xml.gz
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            # Create a note about the 403 error
+            echo "{\"error\": \"403 Forbidden - Access denied to the EPG URL\", \"timestamp\": \"$(date -Iseconds)\"}" > public/epg-status.json
+          fi
+
+      - name: Commit and push changes
+        run: |
+          # Configure git
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Add the public folder
+          git add public/
+          
+          # Commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update EPG file - $(date +'%Y-%m-%d')"
+            git push
+          fi
+
+      - name: Disconnect NordVPN
+        if: always()  # Always run this step, even if previous steps fail
+        run: |
+          nordvpn disconnect
+          nordvpn logout
+
+      - name: Upload EPG file as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: epg-files
+          path: public/
+          retention-days: 7
