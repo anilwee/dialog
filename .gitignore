@@ -1,5 +1,9 @@
+gitignore
 # Ignore sensitive files
 .config/
 *.log
-*.gz
 download-error.log
+
+# Ignore all .gz files EXCEPT epg.xml.gz
+*.gz
+!public/epg.xml.gz
