@@ -1,17 +1,15 @@
-name: Download EPG XML Data
+name: Download and Process EPG XML Data
 
 on:
   schedule:
-    # 1:00 AM NZT - runs at 12:00 UTC
-    # During NZDT (daylight): 1:00 AM NZDT
-    # During NZST (standard): 12:00 AM NZST
+    # Runs at 12:00 UTC daily (1:00 AM NZDT, 12:00 AM NZST)
     - cron: '0 12 * * *'
   
   # Manual trigger from GitHub Actions tab
   workflow_dispatch:
 
 jobs:
-  download-epg:
+  download-and-process-epg:
     runs-on: ubuntu-latest
     
     steps:
@@ -25,19 +23,25 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install requests
+          pip install requests beautifulsoup4
       
       - name: Create open folder if it doesn't exist
         run: |
           mkdir -p open
       
-      - name: Run EPG download script
+      - name: Download EPG XML
         run: python download_epg.py
       
-      - name: Commit and push if epg.xml changed
+      - name: Generate LCN mapping from LyngSat
+        run: python generate_lcn_mapping.py
+      
+      - name: Generate EPG with channel logos
+        run: python generate_epg_with_logos.py
+      
+      - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add open/epg.xml
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update EPG data in open folder [skip ci]"
+          git add open/epg.xml dialog_lcn_map.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update EPG data with channel organization [skip ci]"
           git push
