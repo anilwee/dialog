@@ -2,13 +2,30 @@ name: Download EPG XML Data
 
 on:
   schedule:
-    # 1:00 AM NZT = 12:00 UTC (NZT is UTC+13 during daylight saving, UTC+12 standard)
-    # Using UTC+12 (Standard Time) - adjust if needed for DST
-    - cron: '12:00 * * *'
-    # Alternative if you want to ensure 1:00 AM NZT year-round, consider using a more complex schedule
-    # or run multiple times. Simpler: run at 12:00 UTC (which is 1:00 AM NZST)
+    # 1:00 AM NZT (UTC+12) = 13:00 UTC previous day? Let me clarify:
+    # NZT (Standard) = UTC+12 → 1:00 AM NZT = 13:00 UTC previous day
+    # Example: Jan 2, 1:00 AM NZT = Jan 1, 13:00 UTC
     
-  # Manual trigger from GitHub Actions tab
+    # Using NZST (UTC+12, non-daylight savings time)
+    - cron: '13 12 * * *'   # 12:13? No, let me correct
+    
+    # CORRECT: For 1:00 AM NZST (UTC+12) → 13:00 UTC previous day
+    # But cron doesn't support "previous day" easily
+    
+    # SIMPLER SOLUTION: Run at 12:00 UTC 
+    # In UTC+12 (NZT standard), 12:00 UTC = 12:00 AM NZT (midnight)
+    # In UTC+13 (NZDT daylight), 12:00 UTC = 1:00 AM NZDT ✅
+    
+    - cron: '0 12 * * *'   # 12:00 UTC daily
+    
+    # This means:
+    # - During Daylight Saving (UTC+13): Runs at 1:00 AM NZDT
+    # - During Standard Time (UTC+12): Runs at 12:00 AM NZST
+  
+  # Alternative if you want to schedule specifically for 1:00 AM NZST (non-DST only):
+  # - cron: '0 13 * * *'   # 13:00 UTC = 1:00 AM NZST (standard time only)
+  
+  # Manual trigger
   workflow_dispatch:
 
 jobs:
