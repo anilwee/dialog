@@ -18,13 +18,12 @@ def download_epg():
     
     try:
         response = requests.get(url, timeout=30)
-        response.raise_for_status()  # Raise exception for bad status codes
+        response.raise_for_status()
         
-        # Save to file in 'open' folder
+        # Save original file
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(response.text)
         
-        # Check if file is not empty
         if os.path.getsize(filename) > 0:
             print(f"[{datetime.now().isoformat()}] Successfully saved to {filename}")
             print(f"File size: {os.path.getsize(filename)} bytes")
