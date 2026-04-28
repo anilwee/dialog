@@ -1,0 +1,40 @@
+name: Download EPG XML Data
+
+on:
+  schedule:
+    # 1:00 AM NZT = 12:00 UTC (NZT is UTC+13 during daylight saving, UTC+12 standard)
+    # Using UTC+12 (Standard Time) - adjust if needed for DST
+    - cron: '12:00 * * *'
+    # Alternative if you want to ensure 1:00 AM NZT year-round, consider using a more complex schedule
+    # or run multiple times. Simpler: run at 12:00 UTC (which is 1:00 AM NZST)
+    
+  # Manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  download-epg:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests
+      
+      - name: Run EPG download script
+        run: python download_epg.py
+      
+      - name: Commit and push if epg.xml changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add epg.xml
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update EPG data [skip ci]"
+          git push
