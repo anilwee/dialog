@@ -27,12 +27,16 @@ def download_epg():
         if os.path.getsize(filename) > 0:
             print(f"[{datetime.now().isoformat()}] Successfully saved to {filename}")
             print(f"File size: {os.path.getsize(filename)} bytes")
+            return True
         else:
             print(f"[{datetime.now().isoformat()}] WARNING: Downloaded file is empty")
+            return False
             
     except requests.exceptions.RequestException as e:
         print(f"[{datetime.now().isoformat()}] ERROR: Failed to download: {e}")
         raise
 
 if __name__ == "__main__":
-    download_epg()
+    success = download_epg()
+    if not success:
+        exit(1)
