@@ -2,18 +2,25 @@ import xml.etree.ElementTree as ET
 import os
 import json
 import re
+import shutil
 from datetime import datetime
 
 def load_lcn_mapping():
     """Load LCN to channel name mapping"""
-    try:
-        with open("dialog_lcn_map.json", 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print("LCN mapping file not found. Run generate_lcn_mapping.py first.")
+    mapping_file = "dialog_lcn_map.json"
+    
+    if not os.path.exists(mapping_file):
+        print(f"LCN mapping file '{mapping_file}' not found. Creating empty mapping.")
+        # Create empty mapping
+        with open(mapping_file, 'w', encoding='utf-8') as f:
+            json.dump({}, f)
         return {}
+    
+    try:
+        with open(mapping_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
     except json.JSONDecodeError:
-        print("Error reading LCN mapping file.")
+        print(f"Error reading {mapping_file}. Using empty mapping.")
         return {}
 
 def load_logos():
@@ -39,7 +46,7 @@ def load_logos():
                 lcn_to_logo[lcn] = os.path.join(logo_folder, filename)
                 print(f"Found logo for LCN {lcn}: {filename}")
             else:
-                print(f"Warning: Could not extract LCN from filename: {filename}")
+                print(f"Note: Could not extract LCN from filename (ignoring): {filename}")
     
     return lcn_to_logo
 
@@ -68,14 +75,6 @@ def organize_and_add_logos_to_epg(original_epg_path, output_epg_path, lcn_mappin
                 'display_name': display_name
             })
         
-        # Match channels to LCN using display_name
-        # Create reverse mapping from channel name to LCN
-        name_to_lcn = {}
-        for lcn, name in lcn_mapping.items():
-            # Normalize names for matching
-            normalized_name = name.lower().strip()
-            name_to_lcn[normalized_name] = lcn
-        
         # Create a new root with sorted channels
         new_root = ET.Element('tv')
         
@@ -98,8 +97,10 @@ def organize_and_add_logos_to_epg(original_epg_path, output_epg_path, lcn_mappin
             # Try to match with LCN mapping
             matched_lcn = None
             for lcn, name in lcn_mapping.items():
-                if name.lower() in normalized_display or normalized_display in name.lower():
-                    matched_lcn = lcn
+                # Convert both to strings for comparison
+                name_lower = str(name).lower().strip()
+                if name_lower in normalized_display or normalized_display in name_lower:
+                    matched_lcn = int(lcn)
                     break
             
             if matched_lcn:
@@ -111,15 +112,23 @@ def organize_and_add_logos_to_epg(original_epg_path, output_epg_path, lcn_mappin
         channels_with_lcn.sort(key=lambda x: x[0])
         
         # Add channels to new root
+        logo_count = 0
         for lcn, channel in channels_with_lcn:
             # Add logo if available
             if lcn in lcn_to_logo:
                 icon_path = lcn_to_logo[lcn]
-                # Convert to relative path or URL
+                # Convert to relative path
                 icon_url = f"logo/{os.path.basename(icon_path)}"
+                
+                # Check if icon already exists
+                existing_icon = channel['element'].find('icon')
+                if existing_icon is not None:
+                    channel['element'].remove(existing_icon)
+                
                 icon_elem = ET.SubElement(channel['element'], 'icon')
                 icon_elem.set('src', icon_url)
                 print(f"Added logo for LCN {lcn}: {channel['display_name']}")
+                logo_count += 1
             
             new_root.append(channel['element'])
         
@@ -135,8 +144,9 @@ def organize_and_add_logos_to_epg(original_epg_path, output_epg_path, lcn_mappin
         new_tree = ET.ElementTree(new_root)
         new_tree.write(output_epg_path, encoding='utf-8', xml_declaration=True)
         
-        print(f"Successfully organized EPG with {len(channels_with_lcn)} numbered channels")
-        print(f"Added logos for {len([l for l in channels_with_lcn if l[0] in lcn_to_logo])} channels")
+        print(f"\n✅ Success! Processed {len(channels_with_lcn)} numbered channels")
+        print(f"Added logos for {logo_count} channels")
+        print(f"Unmatched channels: {len(channels_without_lcn)}")
         return True
         
     except ET.ParseError as e:
@@ -150,27 +160,34 @@ def main():
     original_epg = "open/epg.xml"
     output_epg = "open/epg_organized.xml"
     
+    print("=" * 50)
+    print("EPG Processor with Channel Logos")
+    print("=" * 50)
+    
     # Load LCN mapping
-    print("Loading LCN mapping...")
+    print("\n1. Loading LCN mapping...")
     lcn_mapping = load_lcn_mapping()
-    print(f"Loaded {len(lcn_mapping)} LCN mappings")
+    print(f"   Loaded {len(lcn_mapping)} LCN mappings")
     
     # Load available logos
-    print("\nScanning for logos...")
+    print("\n2. Scanning for logos...")
     lcn_to_logo = load_logos()
-    print(f"Found {len(lcn_to_logo)} logos")
+    print(f"   Found {len(lcn_to_logo)} logos")
     
     # Process EPG
-    print("\nProcessing EPG...")
+    print("\n3. Processing EPG...")
     if organize_and_add_logos_to_epg(original_epg, output_epg, lcn_mapping, lcn_to_logo):
-        print(f"\n✅ Success! Organized EPG saved to: {output_epg}")
-        
         # Replace original with organized version
-        import shutil
         shutil.copy2(output_epg, original_epg)
-        print("Updated original epg.xml with organized version")
+        print(f"\n✅ Updated {original_epg} with organized channels and logos")
     else:
-        print("Failed to process EPG")
+        print("\n❌ Failed to process EPG")
+        return 1
+    
+    print("\n" + "=" * 50)
+    print("Complete!")
+    print("=" * 50)
+    return 0
 
 if __name__ == "__main__":
-    main()
+    exit(main())
