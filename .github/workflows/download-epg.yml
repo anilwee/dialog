@@ -25,23 +25,28 @@ jobs:
         run: |
           pip install requests beautifulsoup4
       
-      - name: Create open folder if it doesn't exist
+      - name: Create open and logo folders if they don't exist
         run: |
           mkdir -p open
+          mkdir -p logo
       
       - name: Download EPG XML
         run: python download_epg.py
+        continue-on-error: false
       
       - name: Generate LCN mapping from LyngSat
         run: python generate_lcn_mapping.py
+        continue-on-error: true  # Don't fail if LyngSat is unreachable
       
       - name: Generate EPG with channel logos
         run: python generate_epg_with_logos.py
+        continue-on-error: false
       
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add open/epg.xml dialog_lcn_map.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update EPG data with channel organization [skip ci]"
-          git push
+          git add open/epg.xml logo/ 2>/dev/null || true
+          git add dialog_lcn_map.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Update EPG data with channel organization [skip ci]" || echo "No changes to commit"
+          git push || echo "Nothing to push or push failed"
