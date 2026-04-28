@@ -4,7 +4,15 @@ from datetime import datetime
 
 def download_epg():
     url = "https://api.viulk.xyz/epg/xml"
-    filename = "epg.xml"
+    
+    # Create 'open' folder if it doesn't exist
+    folder_name = "open"
+    filename = os.path.join(folder_name, "epg.xml")
+    
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+        print(f"[{datetime.now().isoformat()}] Created folder: {folder_name}")
     
     print(f"[{datetime.now().isoformat()}] Downloading EPG from {url}")
     
@@ -12,7 +20,7 @@ def download_epg():
         response = requests.get(url, timeout=30)
         response.raise_for_status()  # Raise exception for bad status codes
         
-        # Save to file
+        # Save to file in 'open' folder
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(response.text)
         
