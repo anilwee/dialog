@@ -1,6 +1,6 @@
 name: Download and Process EPG XML Data
 
-on:
+##on:
   schedule:
     # Runs at 12:00 UTC daily (1:00 AM NZDT, 12:00 AM NZST)
     - cron: '0 12 * * *'
