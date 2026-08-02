@@ -1,8 +1,8 @@
 name: Generate Sri Lanka EPG
 
-on:
+##on:
   ###schedule:
-    - cron: '15 13 * * *'  # 1:15 AM AKL time
+    ##- cron: '15 13 * * *'  # 1:15 AM AKL time
   workflow_dispatch:
 
 jobs:
