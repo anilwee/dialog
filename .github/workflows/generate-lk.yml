@@ -1,7 +1,7 @@
 name: Generate Sri Lanka EPG
 
 on:
-  schedule:
+  ###schedule:
     - cron: '15 13 * * *'  # 1:15 AM AKL time
   workflow_dispatch:
 
